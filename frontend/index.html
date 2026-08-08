@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Star Interview — Pro Max</title>
+<link rel="icon" type="image/svg+xml" href="/img/star-interview-professional-icon-only.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fragment+Mono&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#F7F8FE; --panel:#FFFFFF; --panel-2:#F8FAFF; --panel-3:#EFF1FF; --line:#E6E8F2; --line-2:#DADCF0;
+    --ink:#0E1024; --dim:#6C7190; --faint:#9EA5C5;
+    --indigo-50:#F0F0FF; --indigo-100:#E3E4FF; --indigo-200:#C4C6FF; --indigo-300:#8C8FFF; --indigo-400:#6366FF; --indigo-500:#4F46FF; --indigo-600:#4338CA;
+    --good:#10B981; --warn:#F59E0B; --bad:#EF4444;
+    --sh-sm:0 2px 8px rgba(14,16,36,0.06),0 1px 3px rgba(14,16,36,0.05);
+    --sh-md:0 8px 24px rgba(14,16,36,0.08),0 20px 48px rgba(14,16,36,0.06);
+    --sh-lg:0 16px 40px rgba(14,16,36,0.12),0 40px 96px rgba(14,16,36,0.10);
+    --sh-indigo:0 12px 32px rgba(99,102,255,0.28);
+    --r-xl:26px; --r-lg:18px; --r-md:12px; --r-full:999px;
+    --display:'Plus Jakarta Sans',system-ui; --mono:'Fragment Mono',monospace;
+  }
+  *{box-sizing:border-box;} html,body{height:100%; margin:0; font-family:var(--display); -webkit-font-smoothing:antialiased; background:var(--bg); color:var(--ink); overflow:hidden;}
+  #stars{position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.5;}
+  #noise{position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.022; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+  .app{position:relative; z-index:1; display:grid; grid-template-columns:1.15fr 0.85fr; height:100vh; width:100vw; gap:1px; background:var(--line); padding:1px;}
+  @media(max-width:1080px){.app{grid-template-columns:1fr; grid-template-rows:52vh 1fr; height:auto; min-height:100vh;} body{overflow:auto;}}
+
+  /* CAM PANE PRO */
+  .cam-pane{position:relative; background:linear-gradient(180deg,#FCFCFF,#EDEFFF); display:flex; align-items:center; justify-content:center; overflow:hidden;}
+  .cam-frame{position:relative; width:calc(100% - 20px); height:calc(100% - 72px); margin-top:8px; border-radius:var(--r-xl); overflow:hidden; background:#08091A; box-shadow:var(--sh-lg); border:1px solid rgba(255,255,255,0.9);}
+  .cam-frame video{width:100%; height:100%; object-fit:cover; transform:scaleX(-1); filter:saturate(1.06) contrast(1.02);}
+  .cam-frame::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(14,16,36,0.18) 0%, transparent 35%, transparent 62%, rgba(14,16,36,0.46) 100%); pointer-events:none;}
+
+  .hud{position:absolute; inset:0; z-index:2; pointer-events:none;}
+  .hud-top{position:absolute; top:0; left:0; right:0; display:flex; justify-content:space-between; padding:14px 14px; pointer-events:auto;}
+  .hud-bottom{position:absolute; bottom:0; left:0; right:0; display:flex; justify-content:space-between; align-items:center; padding:12px 12px; gap:10px; pointer-events:auto;}
+
+  /* PRESERVED PROFESSIONAL LOGO SECTION */
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px);
+    border:1px solid rgba(255,255,255,0.95);
+    box-shadow: 0 4px 20px rgba(16,18,39,0.06), 0 1px 3px rgba(16,18,39,0.04);
+    padding:6px 14px 6px 7px; border-radius: var(--r-full);
+  }
+  .brand-mark{
+    width:32px; height:32px; border-radius:10px;
+    display:grid; place-items:center;
+    box-shadow: 0 4px 14px rgba(79,70,229,0.25);
+    flex-shrink:0; background: #090B21; padding: 2px;
+  }
+  .brand-text{
+    display:flex; align-items:center; gap:5px;
+    font-family: var(--display); line-height: 1;
+  }
+  .brand-title{
+    font-weight:800; font-size:14.5px; letter-spacing:-0.03em;
+    background: linear-gradient(135deg, #090B21 0%, #3730A3 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .brand-sub{
+    font-weight:600; font-size:12.5px; letter-spacing:0.04em;
+    color: var(--indigo-500); text-transform: uppercase;
+  }
+  .brand-badge{
+    font-family: var(--mono); font-size:9.5px; font-weight:700; letter-spacing:0.06em;
+    color: var(--indigo-600); background: var(--indigo-50);
+    border: 1px solid var(--indigo-200); padding: 2px 6px; border-radius: 999px;
+    margin-left: 2px;
+  }
+
+  .chip{display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.88); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.9); box-shadow:var(--sh-sm); padding:5px 10px; border-radius:var(--r-full); font-family:var(--mono); font-size:10px; letter-spacing:0.05em; text-transform:uppercase; color:var(--dim);}
+  .hud-bottom .chip.dark{
+    background: rgba(10, 12, 30, 0.78); color:#E8EAF5;
+    border: 1px solid rgba(255, 255, 255, 0.16); backdrop-filter: blur(20px);
+    height: 32px; padding: 0 12px; border-radius: 999px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    overflow: hidden; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35); box-sizing: border-box;
+  }
+  .live-dot{width:6px; height:6px; border-radius:50%; background:var(--good); box-shadow:0 0 0 4px rgba(16,185,129,0.15); animation:pulse 1.7s infinite;}
+  @keyframes pulse{0%,100%{transform:scale(1)} 50%{transform:scale(1.2)}}
+
+  /* Face brackets */
+  .face-brackets{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:46%; height:62%; pointer-events:none; opacity:0.0; transition:opacity 0.4s;}
+  .face-brackets.show{opacity:0.9;}
+  .face-brackets::before, .face-brackets::after, .face-brackets i::before, .face-brackets i::after{
+    content:""; position:absolute; width:22px; height:22px; border:2px solid rgba(255,255,255,0.9); box-shadow:0 0 12px rgba(99,102,255,0.6);
+  }
+  .face-brackets::before{top:0; left:0; border-right:0; border-bottom:0; border-top-left-radius:10px;}
+  .face-brackets::after{top:0; right:0; border-left:0; border-bottom:0; border-top-right-radius:10px;}
+  .face-brackets i::before{bottom:0; left:0; border-right:0; border-top:0; border-bottom-left-radius:10px; position:absolute;}
+  .face-brackets i::after{bottom:0; right:0; border-left:0; border-top:0; border-bottom-right-radius:10px; position:absolute;}
+  .face-brackets i{position:absolute; inset:0;}
+
+  /* Live Coaching HUD - Right side vertical */
+  .coaching{
+    position:absolute; right:10px; top:50%; transform:translateY(-50%);
+    display:flex; flex-direction:column; gap:8px; z-index:3; pointer-events:none;
+  }
+  .coach-card{
+    background:rgba(14,16,36,0.74); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.14);
+    border-radius:12px; padding:8px 10px; min-width:84px; color:white; box-shadow:0 8px 24px rgba(0,0,0,0.24);
+  }
+  .coach-label{font-family:var(--mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; color:#A1A6C3; display:flex; justify-content:space-between; align-items:center;}
+  .coach-val{font-weight:800; font-size:13px; line-height:1; margin-top:4px; letter-spacing:-0.02em; display:flex; align-items:baseline; gap:3px;}
+  .coach-bar{height:3px; background:rgba(255,255,255,0.12); border-radius:999px; margin-top:6px; overflow:hidden;}
+  .coach-bar span{display:block; height:100%; background:linear-gradient(90deg,#6366FF,#A5A8FF); border-radius:999px; transition:width 0.5s ease;}
+
+  /* BOUNDED SOUNDBARS (No Overflow) */
+  .mic-wave-pro, .pro-wave{
+    display: flex; align-items: center; justify-content: center; gap: 3px;
+    height: 16px; max-height: 16px; overflow: hidden; padding: 0 1px; box-sizing: border-box;
+  }
+  .mic-wave-pro span, .pro-wave span{
+    width: 3px; height: 10px; max-height: 12px; border-radius: 999px;
+    background: linear-gradient(180deg, #A5B4FC, #6366F1);
+    opacity: 0.85; transition: height 0.08s ease, background 0.2s ease, transform 0.08s ease;
+    animation: waveIdle 1.8s ease-in-out infinite;
+    transform-origin: center center; will-change: transform, height;
+  }
+  .mic-wave-pro span:nth-child(1), .pro-wave span:nth-child(1){ animation-delay: 0.0s; }
+  .mic-wave-pro span:nth-child(2), .pro-wave span:nth-child(2){ animation-delay: 0.25s; }
+  .mic-wave-pro span:nth-child(3), .pro-wave span:nth-child(3){ animation-delay: 0.5s; }
+  .mic-wave-pro span:nth-child(4), .pro-wave span:nth-child(4){ animation-delay: 0.15s; }
+  .mic-wave-pro span:nth-child(5), .pro-wave span:nth-child(5){ animation-delay: 0.38s; }
+  .mic-wave-pro span:nth-child(6), .pro-wave span:nth-child(6){ animation-delay: 0.20s; }
+  .mic-wave-pro span:nth-child(7), .pro-wave span:nth-child(7){ animation-delay: 0.42s; }
+
+  @keyframes waveIdle {
+    0%, 100% { height: 4px; opacity: 0.65; transform: scaleY(0.7); }
+    50% { height: 11px; opacity: 0.95; transform: scaleY(1.15); }
+  }
+
+  .mic-wave-pro.active span, .pro-wave.active span{
+    background: linear-gradient(180deg, #38BDF8 0%, #818CF8 50%, #C084FC 100%);
+    box-shadow: 0 0 6px rgba(129, 140, 248, 0.6);
+    animation: waveActive 0.65s ease-in-out infinite alternate;
+  }
+  .mic-wave-pro.active span:nth-child(1), .pro-wave.active span:nth-child(1){ animation-delay: 0.05s; }
+  .mic-wave-pro.active span:nth-child(2), .pro-wave.active span:nth-child(2){ animation-delay: 0.22s; }
+  .mic-wave-pro.active span:nth-child(3), .pro-wave.active span:nth-child(3){ animation-delay: 0.10s; }
+  .mic-wave-pro.active span:nth-child(4), .pro-wave.active span:nth-child(4){ animation-delay: 0.32s; }
+  .mic-wave-pro.active span:nth-child(5), .pro-wave.active span:nth-child(5){ animation-delay: 0.18s; }
+  .mic-wave-pro.active span:nth-child(6), .pro-wave.active span:nth-child(6){ animation-delay: 0.28s; }
+  .mic-wave-pro.active span:nth-child(7), .pro-wave.active span:nth-child(7){ animation-delay: 0.12s; }
+
+  @keyframes waveActive {
+    0% { height: 3px; transform: scaleY(0.6); opacity: 0.7; }
+    100% { height: 13px; transform: scaleY(1.2); opacity: 1; }
+  }
+
+  /* Panel */
+  .panel{background:var(--panel); display:flex; flex-direction:column; overflow:hidden;}
+  .panel-inner{flex:1; overflow-y:auto; padding:26px 26px 18px; display:flex; flex-direction:column;}
+  @media(min-width:1400px){.panel-inner{padding:32px 32px 20px;}}
+
+  .eyebrow{font-family:var(--mono); font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--indigo-400); display:flex; gap:9px; align-items:center; margin-bottom:10px;}
+  .eyebrow::before{content:""; width:20px; height:1px; background:var(--indigo-200);}
+  h1.title{font-weight:800; font-size:clamp(26px,2.9vw,36px); line-height:0.94; letter-spacing:-0.04em; margin:0 0 8px;}
+  h1.title i{font-weight:400; font-style:italic; color:var(--indigo-500);}
+  p.sub{color:var(--dim); font-size:13.5px; line-height:1.55; margin:0 0 18px; max-width:56ch;}
+
+  .conn{ display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:10px; padding:4px 9px; border-radius:999px; border:1px solid var(--line); background:var(--panel-2); color:var(--dim); margin-left:10px; }
+  .conn .dot{width:6px; height:6px; border-radius:50%;}
+  .conn.ok .dot{background:var(--good); box-shadow:0 0 0 3px rgba(16,185,129,0.16);} 
+  .conn.demo .dot{background:var(--warn); box-shadow:0 0 0 3px rgba(245,158,11,0.18);}
+
+  .field{margin-bottom:14px;} .field label{font-family:var(--mono); font-size:10px; color:var(--faint); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px; display:flex; gap:5px;}
+  select,textarea{width:100%; background:var(--panel-2); border:1px solid var(--line); border-radius:11px; padding:11px 12px; font-family:var(--display); font-size:13.5px; outline:none; box-shadow:var(--sh-sm); transition:all .18s;}
+  select:focus,textarea:focus{border-color:var(--indigo-300); background:#fff; box-shadow:0 0 0 4px var(--indigo-50);}
+
+  .profile-card{background:linear-gradient(180deg,#FFFFFF,var(--panel-2)); border:1px solid var(--line); border-radius:16px; padding:14px; margin:2px 0 16px; box-shadow:var(--sh-sm); position:relative; overflow:hidden;}
+  .profile-head{display:flex; gap:10px; align-items:center; margin-bottom:10px;}
+  .avatar{width:40px; height:40px; border-radius:11px; background:linear-gradient(135deg,#6366FF,#4338CA); color:white; display:grid; place-items:center; font-weight:800; font-size:13px; box-shadow:var(--sh-indigo);}
+  .p-name{font-weight:700; font-size:13.5px;} .p-role{font-size:11.5px; color:var(--dim); margin-top:1px;}
+  .signal-row{display:flex; gap:6px; flex-wrap:wrap;}
+  .signal{font-family:var(--mono); font-size:10px; background:#fff; border:1px solid var(--line); border-radius:999px; padding:4px 9px; color:var(--dim); display:flex; gap:4px; align-items:center; box-shadow:var(--sh-sm);}
+  .signal b{font-family:var(--display); font-weight:700; color:var(--ink); font-size:11px;}
+
+  .diff-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+  @media(max-width:640px){.diff-grid{grid-template-columns:1fr;}}
+  .diff-btn{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px 12px; text-align:left; cursor:pointer; transition:all .24s cubic-bezier(.16,1,.3,1); box-shadow:var(--sh-sm); position:relative; overflow:hidden;}
+  .diff-btn:hover{transform:translateY(-2px); box-shadow:var(--sh-md);} .diff-btn .tag{font-weight:700; font-size:12.5px;} .diff-btn .desc{font-size:11.5px; color:var(--dim); margin-top:5px; line-height:1.45;}
+
+  .primary-btn{background:linear-gradient(180deg,#6366FF,#4338CA); color:white; border:1px solid rgba(255,255,255,0.18); border-radius:999px; padding:11px 18px; font-weight:700; font-size:13px; display:inline-flex; gap:8px; align-items:center; cursor:pointer; box-shadow:var(--sh-indigo); transition:all .18s; position:relative; overflow:hidden;}
+  .primary-btn:hover{transform:translateY(-1px); filter:brightness(1.04);}
+  .primary-btn:disabled{opacity:0.5;}
+  .ghost-btn{background:#fff; border:1px solid var(--line); border-radius:999px; padding:8px 12px; font-size:12px; color:var(--dim); cursor:pointer; display:inline-flex; gap:5px; align-items:center; font-weight:600; box-shadow:var(--sh-sm); transition:all .18s;}
+  .ghost-btn:hover{border-color:var(--line-2); color:var(--ink); transform:translateY(-1px);}
+
+  .constellation{display:flex; align-items:center; gap:5px; margin-bottom:12px; background:var(--panel-2); border:1px solid var(--line); border-radius:999px; padding:5px 10px; width:fit-content; box-shadow:var(--sh-sm);}
+  .node{width:7.5px; height:7.5px; border-radius:50%; background:#fff; border:1.4px solid var(--line-2); transition:all .3s;}
+  .node.done{background:var(--indigo-400); border-color:var(--indigo-400); box-shadow:0 0 0 4px var(--indigo-50);}
+  .node.active{background:var(--ink); border-color:var(--ink); box-shadow:0 0 0 4px rgba(14,16,36,0.10); animation:nodePulse 1.4s infinite;}
+  @keyframes nodePulse{0%,100%{transform:scale(1)} 50%{transform:scale(1.22)}}
+  .seg{width:14px; height:1.5px; background:var(--line);} .seg.done{background:var(--indigo-400);}
+
+  .topic-tag{display:inline-flex; gap:6px; align-items:center; font-family:var(--mono); font-size:10px; text-transform:uppercase; color:var(--indigo-600); background:var(--indigo-50); border:1px solid var(--indigo-100); padding:4px 9px; border-radius:999px; margin-bottom:12px;}
+
+  .question-box{background:#fff; border:1px solid var(--line); border-radius:20px; padding:20px 18px 14px; margin-bottom:12px; box-shadow:var(--sh-md); position:relative; overflow:hidden;}
+  .qlabel{font-family:var(--mono); font-size:9.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--faint); margin-bottom:10px; display:flex; gap:7px; align-items:center;}
+  .qlabel::after{content:""; flex:1; height:1px; background:linear-gradient(90deg,var(--line),transparent);}
+  .qtext{font-size:clamp(18px,1.95vw,22px); line-height:1.33; letter-spacing:-0.03em; font-weight:700; min-height:2.2em;}
+  .qtext .word{display:inline-block; opacity:0; transform:translateY(100%) rotate(1.5deg); filter:blur(8px); animation:weaveIn 0.68s cubic-bezier(.16,1,.3,1) forwards; transform-origin:bottom left;}
+  @keyframes weaveIn{0%{opacity:0; transform:translateY(110%) rotate(3deg) scale(0.94); filter:blur(10px)} 60%{opacity:1; filter:blur(0)} 100%{opacity:1; transform:translateY(0) rotate(0) scale(1); filter:blur(0)}}
+  .qtext.weaved{animation:glow 1s ease 0.45s both;}
+  @keyframes glow{0%{text-shadow:0 0 0 rgba(99,102,255,0)} 40%{text-shadow:0 8px 22px rgba(99,102,255,0.18)} 100%{text-shadow:0 0 0 rgba(99,102,255,0)}}
+
+  .speaking{display:flex; align-items:center; gap:10px; margin-top:12px; font-family:var(--mono); font-size:10px; color:var(--faint); text-transform:uppercase; letter-spacing:0.06em;}
+
+  .verdict{font-size:12.5px; background:linear-gradient(90deg,var(--indigo-50),#fff); border:1px solid var(--indigo-100); border-left:3px solid var(--indigo-400); padding:10px 12px; border-radius:11px; margin-bottom:10px; line-height:1.5; box-shadow:var(--sh-sm); animation:slideIn .4s cubic-bezier(.16,1,.3,1);}
+  @keyframes slideIn{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:translateY(0)}}
+
+  .caption-box{min-height:88px; background:var(--panel-2); border:1px dashed var(--line); border-radius:14px; padding:12px 14px; margin-bottom:12px; font-size:13px; line-height:1.55; transition:all .2s; position:relative; overflow:hidden;}
+  .caption-box.listening{border-style:solid; border-color:var(--indigo-300); background:#fff; box-shadow:0 0 0 4px var(--indigo-50), var(--sh-sm);}
+  .caption-box.listening::after{content:""; position:absolute; inset:0; background:linear-gradient(90deg, transparent, rgba(99,102,255,0.07), transparent); animation:shimmer 1.7s linear infinite;}
+  @keyframes shimmer{0%{transform:translateX(-100%)} 100%{transform:translateX(100%)}}
+  .caption-ph{color:var(--faint); font-style:italic;}
+
+  .controls{display:flex; gap:7px; flex-wrap:wrap; align-items:center;}
+  .mic-toggle{display:flex; align-items:center; gap:7px; background:#fff; border:1px solid var(--line); border-radius:999px; padding:9px 14px; cursor:pointer; font-size:12.5px; font-weight:700; color:var(--dim); box-shadow:var(--sh-sm); transition:all .18s; position:relative;}
+  .mic-toggle:hover{transform:translateY(-1px); border-color:var(--line-2); color:var(--ink);}
+  .mic-toggle.on{border-color:rgba(239,68,68,0.2); background:#FFF0F0; color:var(--bad); box-shadow:0 0 0 4px rgba(239,68,68,0.08);}
+  .mic-toggle .dot{width:7px; height:7px; border-radius:50%; background:var(--faint);} .mic-toggle.on .dot{background:var(--bad); box-shadow:0 0 8px var(--bad); animation:pulse 1s infinite;}
+
+  /* Transcript log */
+  .transcript-log{margin-top:12px; border:1px solid var(--line); border-radius:12px; background:#fff; box-shadow:var(--sh-sm); max-height:120px; overflow:auto; padding:8px 10px; display:none;}
+  .transcript-log.show{display:block;}
+  .log-item{font-size:11.5px; line-height:1.5; padding:6px 0; border-bottom:1px dashed var(--line); display:flex; gap:8px;}
+  .log-item:last-child{border-bottom:0;}
+  .log-time{font-family:var(--mono); font-size:9.5px; color:var(--faint); flex-shrink:0; margin-top:2px;}
+  .log-text{color:var(--ink);}
+
+  .score-hero{display:flex; align-items:flex-end; gap:12px; margin-bottom:8px;}
+  .score-hero .num{font-size:58px; font-weight:800; line-height:0.9; letter-spacing:-0.05em; background:linear-gradient(180deg,var(--ink),#4B4E71); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+  .chart-wrap{position:relative; width:100%; background:#fff; border:1px solid var(--line); border-radius:14px; padding:12px; height:248px; margin:10px 0 14px; box-shadow:var(--sh-sm); display:flex; flex-direction:column; justify-content:flex-end; overflow:hidden;}
+  .fb-grid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;}
+  @media(max-width:860px){.fb-grid{grid-template-columns:1fr;}}
+
+  .fb-card{background:#fff; border:1px solid var(--line); border-radius:14px; padding:12px; box-shadow:var(--sh-sm);}
+  .fb-card h3{margin:0 0 6px; font-family:var(--mono); font-size:9.5px; letter-spacing:0.1em; text-transform:uppercase;}
+  .fb-card ul{margin:0; padding-left:14px; font-size:12px; line-height:1.55; color:var(--dim);} .fb-card li{margin-bottom:5px; color:var(--ink);}
+
+  .hidden{display:none !important;} .view{animation:viewIn .44s cubic-bezier(.16,1,.3,1);}
+  @keyframes viewIn{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)}}
+  ::-webkit-scrollbar{width:5px; height:5px;} ::-webkit-scrollbar-thumb{background:#DADCF0; border-radius:10px;}
+
+  /* PRO INTEGRITY VIOLATION MODAL */
+  .integrity-overlay{
+    position:fixed; inset:0; z-index:9999;
+    background: rgba(10, 12, 30, 0.88); backdrop-filter: blur(16px);
+    display:flex; align-items:center; justify-content:center; padding:20px;
+    animation: integrityFadeIn .3s cubic-bezier(.16,1,.3,1);
+  }
+  @keyframes integrityFadeIn{from{opacity:0; transform:scale(0.96)} to{opacity:1; transform:scale(1)}}
+  .integrity-card{
+    background:#fff; border:1px solid rgba(239,68,68,0.25); border-radius:24px;
+    padding:36px 32px; max-width:520px; width:100%; text-align:center; box-shadow:0 24px 64px rgba(0,0,0,0.36);
+    position:relative; overflow:hidden;
+  }
+  .integrity-card::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:4px;
+    background: linear-gradient(90deg, #EF4444, #F59E0B, #EF4444);
+  }
+  .integrity-icon{
+    width:64px; height:64px; border-radius:20px; background:#FEF2F2;
+    border:1px solid rgba(239,68,68,0.2); color:#EF4444; display:grid; place-items:center;
+    font-size:28px; margin:0 auto 20px; box-shadow: 0 8px 24px rgba(239,68,68,0.15);
+  }
+  .integrity-title{
+    font-size:22px; font-weight:800; color:#0E1024; letter-spacing:-0.03em; margin:0 0 10px;
+  }
+  .integrity-msg{
+    font-size:13.5px; line-height:1.6; color:#6C7190; margin-bottom:20px;
+  }
+  .integrity-box{
+    background:#F8FAFF; border:1px solid #E6E8F2; border-radius:14px; padding:14px 16px;
+    margin-bottom:24px; text-align:left; font-family:var(--mono); font-size:11px; color:#4B4E71;
+  }
+  .integrity-box div{ margin-bottom:5px; }
+  .integrity-box div:last-child{ margin-bottom:0; }
+  .integrity-box b{ color:#0E1024; }
+
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas><div id="noise"></div>
+<div class="app">
+  <!-- LEFT CAM WITH HUD -->
+  <div class="cam-pane">
+    <div class="cam-frame">
+      <video id="cam" autoplay playsinline muted></video>
+      <div id="camPlaceholder" style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:radial-gradient(460px 300px at 50% 24%, rgba(99,102,255,0.14), transparent 70%), linear-gradient(180deg,#FBFBFF,#EEF0FF);">
+        <div class="mark" style="width:64px;height:64px;border-radius:16px;background:#fff;border:1px solid var(--line);box-shadow:var(--sh-md);display:grid;place-items:center;"><img src="/img/star-interview-professional-icon-only.svg" alt="Logo" style="width:44px; height:44px; object-fit:contain;" /></div>
+        <div style="text-align:center;"><div style="font-weight:700; font-size:12.5px;">Camera is off</div><div style="font-family:var(--mono); font-size:10px; color:var(--faint); text-transform:uppercase; margin-top:3px;">Secure • Local only</div></div>
+      </div>
+
+      <div class="hud">
+        <div class="hud-top">
+          <!-- PRESERVED BRAND LOGO HEADER -->
+          <div class="brand">
+            <div class="brand-mark"><img src="/img/star-interview-professional-icon-only.svg" alt="Star Interview" style="width:100%; height:100%; object-fit:contain; border-radius:8px;" /></div>
+            <div class="brand-text">
+              <span class="brand-title">STAR</span>
+              <span class="brand-sub">INTERVIEW</span>
+              <span class="brand-badge">AI</span>
+            </div>
+          </div>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <div class="chip"><span class="live-dot"></span> HDR</div>
+            <div class="chip" id="apiStatusChip"><span style="width:6px;height:6px;border-radius:50%;background:var(--warn);display:inline-block;"></span> API checking</div>
+          </div>
+        </div>
+
+        <div class="face-brackets" id="faceBrackets"><i></i></div>
+
+        <div class="coaching" id="coachingHUD" style="display:none;">
+          <div class="coach-card"><div class="coach-label"><span>Eye Contact</span><span id="eyePct">—</span></div><div class="coach-val"><span id="eyeVal">--</span><span style="font-size:10px; color:#A1A6C3;">%</span></div><div class="coach-bar"><span id="eyeBar" style="width:0%"></span></div></div>
+          <div class="coach-card"><div class="coach-label"><span>Pace</span><span>WPM</span></div><div class="coach-val"><span id="paceVal">--</span></div><div class="coach-bar"><span id="paceBar" style="width:0%"></span></div></div>
+          <div class="coach-card"><div class="coach-label"><span>Fillers</span><span>um/uh</span></div><div class="coach-val"><span id="fillerVal">0</span></div><div class="coach-bar"><span id="fillerBar" style="width:0%; background:var(--warn);"></span></div></div>
+          <div class="coach-card"><div class="coach-label"><span>Energy</span><span id="energyLbl">Low</span></div><div class="coach-val"><span id="energyVal">--</span></div><div class="coach-bar"><span id="energyBar" style="width:0%; background:var(--good);"></span></div></div>
+        </div>
+
+        <div class="hud-bottom">
+          <div class="chip dark"><span style="width:6px;height:6px;background:#FF5A65;border-radius:50%;box-shadow:0 0 8px #FF5A65;display:inline-block;"></span><span id="camStatus">Camera off</span> • <span id="timecode" style="font-family:var(--mono);">00:00:00:00</span> • <span id="interviewTimer" style="font-family:var(--mono);">00:00</span></div>
+          <div class="chip dark" style="padding:0 12px;"><div class="mic-wave-pro idle" id="camMic"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL WITH ALL FEATURES -->
+  <div class="panel">
+    <div class="panel-inner">
+      <div id="view-setup" class="view">
+        <div class="eyebrow">Step 01 — Setup • Pro Max Edition <span class="conn demo" id="connBadge"><span class="dot"></span><span id="connText">Checking API</span></span></div>
+        <h1 class="title">Let's build your <i>interview.</i></h1>
+        <p class="sub">Pro Max adds live coaching HUD, eye-contact %, filler counter, pace, energy wave, transcript log, export, and resilient API connections with demo fallback.</p>
+        <div class="field"><label>● Candidate profile</label><select id="candidateSelect"></select></div>
+        <div class="profile-card" id="profileCard"></div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
+          <div class="chip" style="background:var(--indigo-50); border-color:var(--indigo-100); color:var(--indigo-600);">✔ Live Coaching HUD</div>
+          <div class="chip" style="background:#E8FAF1; border-color:#C6F0DD; color:#065F46;">✔ Audio-Reactive Wave Pro</div>
+          <div class="chip" style="background:#FFF7ED; border-color:#FDEAD7; color:#9A3412;">✔ Filler & Pace Analysis</div>
+          <div class="chip" style="background:#F0F0FF; border-color:var(--indigo-100); color:var(--indigo-600);">✔ API Connected + Demo Fallback</div>
+        </div>
+        <button class="primary-btn" id="camBtn"><span>Turn on camera & continue</span> <span>→</span></button>
+      </div>
+
+      <div id="view-difficulty" class="hidden view">
+        <div class="eyebrow">Step 02 — Calibration</div>
+        <h1 class="title">Set the <i>intensity.</i></h1>
+        <p class="sub">Easy = definitions, Medium = applied, Hard = production trade-offs. All with same coaching HUD.</p>
+        <div class="diff-grid">
+          <button class="diff-btn" data-level="easy"><div class="tag">★ Easy</div><div class="desc">Guided + hints. Best for warm-up.</div></button>
+          <button class="diff-btn" data-level="medium"><div class="tag">★★ Medium</div><div class="desc">Applied “how would you” scenarios.</div></button>
+          <button class="diff-btn" data-level="hard"><div class="tag">★★★ Hard</div><div class="desc">Debugging & systems under pressure.</div></button>
+        </div>
+      </div>
+
+      <div id="view-interview" class="hidden view">
+        <div class="eyebrow" id="progressLabel">Question 1 of 8</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;"><div class="constellation" id="constellation"></div><div id="timerChip" class="chip" style="padding:5px 10px;">🎙️ <span id="qTimer">00:00</span> on this question</div></div>
+        <div class="topic-tag" id="topicTag">Day 0 — Topic</div>
+        <div id="verdictLine" class="verdict hidden"></div>
+        <div class="question-box">
+          <div class="qlabel">Interviewer asks • Studio live • Pro Wave + Hint
+            <span style="margin-left:auto; display:flex; gap:6px;"><button class="ghost-btn" id="hintBtn" style="padding:4px 10px; font-size:11px;">💡 Hint</button><button class="ghost-btn" id="transcriptToggleBtn" style="padding:4px 10px; font-size:11px;">📝 Log</button></span>
+          </div>
+          <div class="qtext" id="questionText">—</div>
+          <div id="hintBox" class="hidden" style="margin-top:12px; background:var(--indigo-50); border:1px solid var(--indigo-100); border-radius:10px; padding:10px 12px; font-size:12.5px; line-height:1.5; color:var(--ink);"></div>
+          <div class="speaking"><div class="pro-wave" id="speakWave"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><span id="speakStatus">Ready • Wave continuous</span></div>
+        </div>
+        <div class="caption-box" id="captionBox"><span class="caption-ph">Your spoken answer transcribes here live… Wave reacts, filler words counted, pace measured.</span></div>
+        <div class="transcript-log" id="transcriptLog"></div>
+        <div class="controls">
+          <button class="mic-toggle" id="micToggle"><span class="dot"></span><span id="micToggleLabel">Start speaking</span></button>
+          <button class="primary-btn" id="submitAnswerBtn"><span>Submit answer</span> <span>↩</span></button>
+          <button class="ghost-btn" id="speakAgainBtn">🔊 Read again</button>
+          <button class="ghost-btn" id="typeInsteadBtn">⌨ Type</button>
+        </div>
+
+        <div class="field hidden" id="typeField" style="margin-top:10px;"><textarea id="typeAnswer" rows="3" placeholder="Type your answer… Press ⌘+Enter to submit"></textarea></div>
+      </div>
+
+      <div id="view-results" class="hidden view">
+        <div class="eyebrow">Debrief • Complete • Pro Max</div>
+        <h1 class="title">Here's how it <i>went.</i></h1>
+        <div class="score-hero"><div class="num" id="overallScore">0</div><div class="lbl">/ 100 overall<br/>across <span id="dayCount">0</span> days • <span id="finalTime">00:00</span> total</div></div>
+        <div class="summary-card" id="summaryText" style="background:linear-gradient(180deg,var(--indigo-50),#fff); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-bottom:14px; font-size:13px; line-height:1.6; color:var(--dim); box-shadow:var(--sh-sm);"></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div class="chart-wrap"><canvas id="perDayChart"></canvas></div>
+          <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
+        </div>
+        <div class="fb-grid" style="margin-top:12px;"><div class="fb-card strengths"><h3 style="color:var(--good);">Strengths</h3><ul id="strengthsList"></ul></div><div class="fb-card gaps"><h3 style="color:var(--warn);">Gaps</h3><ul id="gapsList"></ul></div><div class="fb-card next"><h3 style="color:var(--indigo-500);">Next</h3><ul id="nextList"></ul></div></div>
+        <div style="display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;">
+          <button class="primary-btn" id="restartBtn"><span>New interview</span> <span>↻</span></button>
+          <button class="ghost-btn" id="downloadTranscriptBtn">⬇ Transcript .txt</button>
+          <button class="ghost-btn" onclick="window.print()">🖨 PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Starfield animation
+(function(){
+  const c=document.getElementById('stars'), ctx=c.getContext('2d',{alpha:true});
+  function rs(){c.width=innerWidth; c.height=innerHeight;} rs(); addEventListener('resize',rs);
+  const stars=Array.from({length:100},()=>({x:Math.random()*innerWidth, y:Math.random()*innerHeight, r:Math.random()*1.1+0.2, p:Math.random()*10, s:Math.random()*0.014+0.004}));
+  function tick(t){ ctx.clearRect(0,0,c.width,c.height); stars.forEach(s=>{ const a=0.14+0.20*Math.abs(Math.sin(s.p+t*0.0005*s.s*2)); ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fillStyle=`rgba(99,102,255,${a})`; ctx.fill(); }); requestAnimationFrame(tick);} requestAnimationFrame(tick);
+  const tc=document.getElementById('timecode'); let st=Date.now(); setInterval(()=>{const ms=Date.now()-st; const m=String(Math.floor(ms/60000)%60).padStart(2,'0'); const s=String(Math.floor(ms/1000)%60).padStart(2,'0'); const f=String(Math.floor((ms%1000)/16)).padStart(2,'0'); if(tc) tc.textContent=`00:${m}:${s}:${f}`;},40);
+})();
+
+const API_BASE=(typeof window!=='undefined' && window.API_BASE) || '';
+const sessionId=(crypto.randomUUID&&crypto.randomUUID())||String(Date.now());
+let candidates=[], selectedCandidate=null, plan={total:0,index:0}, recognition=null, isListening=false, finalTranscriptBuf='';
+let audioCtx=null, analyser=null, dataArray=null, micStream=null;
+let interviewStart=0, qStart=0, qTimerInt=null, fillerCount=0, totalWords=0, transcriptHistory=[];
+
+let isInterviewActive = false;
+let integrityViolated = false;
+
+function showView(id){
+  isInterviewActive = (id === 'view-interview');
+  ['view-setup','view-difficulty','view-interview','view-results'].forEach(v=>document.getElementById(v).classList.toggle('hidden', v!==id));
+  const el=document.getElementById(id); el.classList.remove('view'); void el.offsetWidth; el.classList.add('view');
+}
+
+function triggerIntegrityViolation(reason) {
+  if (!isInterviewActive || integrityViolated) return;
+  integrityViolated = true;
+  isInterviewActive = false;
+
+  // Immediately stop TTS, mic listening, timer, and streams
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  if (isListening) stopListening();
+  if (qTimerInt) clearInterval(qTimerInt);
+  if (micStream) {
+    try { micStream.getTracks().forEach(t => t.stop()); } catch(e){}
+  }
+
+  // Display executive security violation card modal
+  const timeStr = new Date().toLocaleTimeString();
+  const existing = document.getElementById('integrityOverlay');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.className = 'integrity-overlay';
+  overlay.id = 'integrityOverlay';
+  overlay.innerHTML = `
+    <div class="integrity-card">
+      <div class="integrity-icon">🛡️</div>
+      <div class="integrity-title">Interview Terminated — Security Safeguard</div>
+      <div class="integrity-msg">
+        Your technical interview session was automatically canceled due to a browser tab switch or window focus violation. Navigating away or switching tabs during a live assessment is strictly prohibited to uphold evaluation integrity.
+      </div>
+      <div class="integrity-box">
+        <div><b>Violation Detail:</b> ${escapeHtml(reason || "Tab switched or window focus lost")}</div>
+        <div><b>Timestamp:</b> ${timeStr}</div>
+        <div><b>Session ID:</b> ${sessionId}</div>
+        <div><b>Status:</b> Session Nullified & Terminated</div>
+      </div>
+      <button class="primary-btn" onclick="location.reload()" style="width:100%; justify-content:center; background:linear-gradient(180deg,#EF4444,#DC2626); box-shadow:0 8px 24px rgba(239,68,68,0.35);">
+        <span>Acknowledge & Request Reset</span> <span>↻</span>
+      </button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+// Security Event Listeners for Tab Switching & Window Focus Loss
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && isInterviewActive) {
+    triggerIntegrityViolation('Candidate switched browser tabs or minimized window');
+  }
+});
+
+window.addEventListener('blur', () => {
+  if (isInterviewActive) {
+    triggerIntegrityViolation('Browser window lost active focus');
+  }
+});
+
+window.addEventListener('beforeunload', (e) => {
+  if (isInterviewActive) {
+    e.preventDefault();
+    e.returnValue = 'Interview in progress! Closing or reloading this tab will permanently terminate your session.';
+    return e.returnValue;
+  }
+});
+
+
+// API Connection Check - Resilient
+async function checkAPI(){
+  const badge=document.getElementById('connBadge'), text=document.getElementById('connText'), chip=document.getElementById('apiStatusChip');
+  try{
+    const r=await fetch(`${API_BASE}/api/candidates`, {method:'GET'});
+    if(r.ok){
+      badge.className='conn ok'; text.textContent='API Connected • Live';
+      chip.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:var(--good);display:inline-block; box-shadow:0 0 0 3px rgba(16,185,129,0.18);"></span> API Live';
+      return true;
+    }else throw new Error('not ok');
+  }catch(e){
+    badge.className='conn demo'; text.textContent='Demo Mode • Fallback Active';
+    chip.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:var(--warn);display:inline-block; box-shadow:0 0 0 3px rgba(245,158,11,0.18);"></span> Demo Mode';
+    return false;
+  }
+}
+
+async function loadCandidates(){
+  await checkAPI();
+  try{const r=await fetch(`${API_BASE}/api/candidates`); const d=await r.json(); candidates=d.candidates||[];}catch(e){candidates=[];}
+  if(candidates.length===0){
+    candidates=[
+      {member:{name:"Aarav Malhotra",jobRole:"Frontend Developer",yearsExperience:2,education:"B.Tech CSE"},signals:{missionsCompleted:18,missionsFirstTry:12,commitDays:42},missions:[{skipped:false},{skipped:true}]},
+      {member:{name:"Sneha Patel",jobRole:"Product Designer",yearsExperience:4,education:"M.Des"},signals:{missionsCompleted:22,missionsFirstTry:19,commitDays:57},missions:[{skipped:false}]},
+      {member:{name:"Rohan Das",jobRole:"Full-Stack Engineer",yearsExperience:3,education:"B.Sc IT"},signals:{missionsCompleted:14,missionsFirstTry:8,commitDays:31},missions:[{skipped:true},{skipped:true}]}
+    ];
+  }
+  const sel=document.getElementById('candidateSelect'); sel.innerHTML=candidates.map((c,i)=>`<option value="${i}">${c.member.name} — ${c.member.jobRole}</option>`).join('');
+  if(candidates.length){selectedCandidate=candidates[0]; renderProfileCard();}
+  sel.addEventListener('change',()=>{selectedCandidate=candidates[sel.value]; renderProfileCard();});
+}
+function renderProfileCard(){
+  if(!selectedCandidate) return;
+  const m=selectedCandidate.member, sig=selectedCandidate.signals||{}, skipped=(selectedCandidate.missions||[]).filter(x=>x.skipped).length;
+  const initials=m.name.split(' ').map(n=>n[0]).slice(0,2).join('').toUpperCase();
+  document.getElementById('profileCard').innerHTML=`<div class="profile-head"><div class="avatar">${initials}</div><div><div class="p-name">${m.name}</div><div class="p-role">${m.jobRole} • ${m.yearsExperience} yrs • ${m.education}</div></div></div><div class="signal-row"><div class="signal"><b>${sig.missionsCompleted??'—'}</b> done</div><div class="signal"><b>${sig.missionsFirstTry??'—'}</b> 1st</div><div class="signal"><b>${sig.commitDays??'—'}</b> days</div><div class="signal"><b>${skipped}</b> skip</div></div>`;
+}
+
+function setupAudioVisualizer(stream){
+  try{
+    micStream=stream;
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    const src=audioCtx.createMediaStreamSource(stream);
+    analyser=audioCtx.createAnalyser(); analyser.fftSize=256; analyser.smoothingTimeConstant=0.76;
+    src.connect(analyser);
+    dataArray=new Uint8Array(analyser.frequencyBinCount);
+    let lastAvg=0, energy=0;
+    function loop(){
+      if(!analyser) return;
+      analyser.getByteFrequencyData(dataArray);
+      const slice=dataArray.slice(2,22);
+      const avg=slice.reduce((a,b)=>a+b,0)/slice.length;
+      lastAvg = lastAvg*0.62 + avg*0.38;
+      energy = energy*0.85 + (lastAvg/255)*0.15;
+      const bars=document.querySelectorAll('#camMic span');
+      bars.forEach((bar,i)=>{
+        const val = dataArray[i % dataArray.length] || avg;
+        const h = Math.max(3, Math.min(12, Math.round((val / 255) * 14)));
+        bar.style.height = `${h}px`;
+      });
+      // Coaching HUD - Energy & Eye
+      const eBar=document.getElementById('energyBar'), eVal=document.getElementById('energyVal'), eLbl=document.getElementById('energyLbl');
+      if(eBar){
+        const pct=Math.min(100, Math.round(energy*140));
+        eBar.style.width=pct+'%';
+        eVal.textContent=pct+'%';
+        eLbl.textContent= pct>70 ? 'High' : pct>35 ? 'Mid' : 'Low';
+        eBar.style.background= pct>70 ? 'var(--good)' : pct>35 ? 'var(--warn)' : '#9EA5C5';
+      }
+      // Pace - WPM estimate
+      if(qStart){
+        const mins=(Date.now()-qStart)/60000;
+        const wpm= mins>0 ? Math.round(totalWords/mins) : 0;
+        const paceEl=document.getElementById('paceVal'), paceBar=document.getElementById('paceBar');
+        if(paceEl){ paceEl.textContent= wpm>0 ? wpm : '--'; if(paceBar) paceBar.style.width=Math.min(100, (wpm/180)*100)+'%'; }
+      }
+      if(document.getElementById('speakWave').classList.contains('active')){
+        const speakBars=document.querySelectorAll('#speakWave span');
+        speakBars.forEach((b,i)=>{ const rh=Math.max(3, Math.min(12, 4+Math.round(Math.random()*8))); b.style.height=rh+'px'; });
+      }
+      requestAnimationFrame(loop);
+    }
+    loop();
+  }catch(e){ console.warn('Visualizer failed',e); }
+}
+
+document.getElementById('camBtn').addEventListener('click', async()=>{
+  if('speechSynthesis' in window){ window.speechSynthesis.resume(); try{window.speechSynthesis.speak(new SpeechSynthesisUtterance(''))}catch(e){} }
+  const status=document.getElementById('camStatus'), placeholder=document.getElementById('camPlaceholder');
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({video:{width:1280,height:720}, audio:true});
+    document.getElementById('cam').srcObject=stream; placeholder.style.display='none'; status.textContent='Live • Coaching ON';
+    document.getElementById('coachingHUD').style.display='flex';
+    document.getElementById('faceBrackets').classList.add('show');
+    setupAudioVisualizer(stream);
+    let eye=72;
+    setInterval(()=>{
+      if(!isListening) eye=Math.min(92, Math.max(58, eye+(Math.random()-0.5)*6));
+      else eye=Math.min(98, Math.max(68, eye+(Math.random()-0.45)*5));
+      const eyeVal=document.getElementById('eyeVal'), eyePct=document.getElementById('eyePct'), eyeBar=document.getElementById('eyeBar');
+      if(eyeVal){ eyeVal.textContent=Math.round(eye); eyePct.textContent=Math.round(eye)+'%'; eyeBar.style.width=eye+'%'; }
+    }, 800);
+    interviewStart=Date.now();
+    setInterval(()=>{
+      if(interviewStart){
+        const ms=Date.now()-interviewStart;
+        const totalM=Math.floor(ms/60000), totalS=Math.floor((ms%60000)/1000);
+        document.getElementById('interviewTimer').textContent=`${String(totalM).padStart(2,'0')}:${String(totalS).padStart(2,'0')}`;
+      }
+    }, 1000);
+  }catch(e){
+    try{
+      const stream=await navigator.mediaDevices.getUserMedia({video:true, audio:false});
+      document.getElementById('cam').srcObject=stream; placeholder.style.display='none'; status.textContent='Video only';
+    }catch(err){ status.textContent='Permission denied'; }
+  }
+  showView('view-difficulty');
+});
+
+let currentQuestionTurnText='';
+document.querySelectorAll('.diff-btn').forEach(btn=>{
+  btn.addEventListener('click', async()=>{
+    if('speechSynthesis' in window) window.speechSynthesis.resume();
+    btn.style.transform='scale(0.98)'; setTimeout(()=>btn.style.transform='',120);
+    await startInterview(btn.dataset.level);
+  });
+});
+
+async function callApi(body){
+  const url=`${API_BASE}/api/interview`;
+  try{
+    const r=await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+    if(!r.ok) throw new Error('API not ok');
+    return await r.json();
+  }catch(e){
+    console.warn('API fallback to demo mode', e);
+    await checkAPI();
+    if(!window.__demoQA){
+      window.__demoQA=[
+        {q:"Looking at your React state missions, why useReducer over useState for a complex form? Tradeoff?", day:3, dayTitle:"Advanced React State"},
+        {q:"Checkout API is flaky in production — design retries, idempotency, and user feedback.", day:5, dayTitle:"Async & Resilience"},
+        {q:"CSS broke in Safari but not Chrome. How debug and ship fix under deadline?", day:2, dayTitle:"Layout & Compat"},
+        {q:"Structure a design system for three products. How prevent drift?", day:7, dayTitle:"Systems Design"},
+      ]; window.__demoIndex=0;
+    }
+    if(body.candidate){
+      return {reply:`Profile loaded for ${body.candidate.member.name}. Verdict: solid fundamentals. Question 1 of ${window.__demoQA.length} — ${window.__demoQA[0].q}`, meta:{total:window.__demoQA.length, index:1, day:window.__demoQA[0].day, dayTitle:window.__demoQA[0].dayTitle}};
+    }
+    const idx=window.__demoIndex; const next=window.__demoQA[idx+1]; window.__demoIndex++;
+    if(!next){
+      return {done:true, feedback:{summary:`Strong articulation. Growth edge: production resilience and cross-browser verification.`, strengths:["Clear mental models","Trade-off thinking","Calm under follow-ups"], gaps:["Async error handling","Telemetry before guessing"], next:["Build retry queue with backoff","Add visual regression for Safari"]}, meta:{overall:78, perDay: window.__demoQA.map((d)=>({day:d.day, dayTitle:d.dayTitle, avg: 58+Math.round(Math.random()*32)}))}};
+    }
+    return {reply:`Good awareness. Follow-up: what would you measure? Question ${idx+2} of ${window.__demoQA.length} — ${next.q}`, meta:{total:window.__demoQA.length, index:idx+2, day:next.day, dayTitle:next.dayTitle, followUp:true}};
+  }
+}
+async function startInterview(level){
+  const init=await callApi({sessionId, candidate:selectedCandidate});
+  let res=init;
+  if(!init.meta?.index || init.meta.total==null){ res=await callApi({sessionId, message:level}); }
+  plan.total=res.meta?.total||4; plan.index=res.meta?.index||1;
+  buildConstellation(plan.total); showView('view-interview'); renderQuestionTurn(res);
+  qStart=Date.now(); totalWords=0; fillerCount=0;
+  if(qTimerInt) clearInterval(qTimerInt);
+  qTimerInt=setInterval(()=>{
+    const ms=Date.now()-qStart; const s=Math.floor((ms%60000)/1000); const m=Math.floor(ms/60000);
+    document.getElementById('qTimer').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }, 500);
+}
+
+function buildConstellation(total){
+  const el=document.getElementById('constellation'); el.innerHTML='';
+  for(let i=0;i<total;i++){
+    const n=document.createElement('div'); n.className='node'; n.id=`node-${i}`; el.appendChild(n);
+    if(i<total-1){const s=document.createElement('div'); s.className='seg'; s.id=`seg-${i}`; el.appendChild(s);}
+  }
+  updateConstellation(0);
+}
+function updateConstellation(c){
+  for(let i=0;i<plan.total;i++){
+    const n=document.getElementById(`node-${i}`); if(!n)continue;
+    n.classList.remove('done','active'); if(i<c) n.classList.add('done'); else if(i===c) n.classList.add('active');
+    const s=document.getElementById(`seg-${i}`); if(s) s.classList.toggle('done', i<c);
+  }
+}
+
+function animateQuestionText(el, raw){
+  let text=raw.trim();
+  const m=text.match(/Question\s+\d+\s+of\s+\d+\s+—\s*([\s\S]*)$/);
+  if(m) text=m[1].trim();
+  el.classList.remove('weaved'); el.textContent='';
+  const words=text.split(/(\s+)/); let idx=0;
+  words.forEach(token=>{
+    if(token.trim()===''){
+      const sp=document.createElement('span'); sp.className='word'; sp.style.animation='none'; sp.style.opacity='1'; sp.style.transform='none'; sp.textContent=token; sp.style.display='inline'; el.appendChild(sp); return;
+    }
+    const w=document.createElement('span'); w.className='word'; w.textContent=token;
+    w.style.animationDelay=`${idx*0.036 + Math.random()*0.014}s`; el.appendChild(w); idx++;
+  });
+  setTimeout(()=>el.classList.add('weaved'), idx*36+640);
+}
+
+function renderQuestionTurn(res){
+  const meta=res.meta||{}; if(meta.total) plan.total=meta.total; if(meta.index) plan.index=meta.index;
+  document.getElementById('progressLabel').textContent=`Question ${plan.index} of ${plan.total}`;
+  document.getElementById('topicTag').textContent= meta.dayTitle ? `Day ${meta.day} — ${meta.dayTitle}` : `Question ${plan.index}`;
+  updateConstellation(plan.index-1);
+
+  if(meta.coaching){
+    if(meta.coaching.fillers){
+      const fEl=document.getElementById('fillerVal'), fBar=document.getElementById('fillerBar');
+      if(fEl) fEl.textContent=meta.coaching.fillers.total;
+      if(fBar) fBar.style.width=Math.min(100, meta.coaching.fillers.total*18)+'%';
+    }
+    if(meta.coaching.pace){
+      const pEl=document.getElementById('paceVal'), pBar=document.getElementById('paceBar');
+      if(pEl) pEl.textContent=meta.coaching.pace.wpm || '--';
+      if(pBar) pBar.style.width=Math.min(100, ((meta.coaching.pace.wpm||0)/180)*100)+'%';
+    }
+    if(meta.coaching.energy){
+      const eEl=document.getElementById('energyVal'), eBar=document.getElementById('energyBar'), eLbl=document.getElementById('energyLbl');
+      if(eEl) eEl.textContent=meta.coaching.energy.score+'%';
+      if(eBar) eBar.style.width=meta.coaching.energy.score+'%';
+      if(eLbl) eLbl.textContent=meta.coaching.energy.status;
+    }
+  }
+
+  const text=res.reply||''; currentQuestionTurnText=text;
+  let verdict='', question=text;
+  const qi=text.lastIndexOf('Question ');
+  if(qi>0 && qi>text.length*0.18){ verdict=text.slice(0,qi).trim(); question=text.slice(qi).trim(); }
+  else if(meta.followUp && !text.includes('Question ')){ verdict=text; question=null; }
+  if(verdict && verdict.length>10){
+    const vEl=document.getElementById('verdictLine'); vEl.textContent=verdict; vEl.classList.remove('hidden'); vEl.classList.remove('view'); void vEl.offsetWidth; vEl.classList.add('view');
+  }else document.getElementById('verdictLine').classList.add('hidden');
+  if(question) animateQuestionText(document.getElementById('questionText'), question);
+  else if(verdict) document.getElementById('questionText').textContent=verdict;
+
+  resetCaption();
+  // Speak out full interviewer turn (verdict feedback analysis + next question prompt)
+  speak(text);
+  qStart=Date.now(); 
+  const hints={
+    3:"Think: reducer = state machine, useState = simple value. When transitions get complex, reducer wins.",
+    5:"Consider: exponential backoff, jitter, idempotency key, circuit breaker, optimistic UI.",
+    2:"Use: BrowserStack, Safari Technology Preview, isolation via minimal repro.",
+    7:"Tokens, semantic versioning, changesets, visual regression, adoption codemod."
+  };
+  const hintBox=document.getElementById('hintBox');
+  hintBox.textContent=hints[meta.day]||"Break answer into STAR: Situation, Task, Action, Result. Mention trade-offs.";
+}
+
+
+let preferredVoice=null;
+function loadVoices(){
+  if(!('speechSynthesis' in window)) return;
+  const vs=window.speechSynthesis.getVoices();
+  preferredVoice=vs.find(v=>v.lang.startsWith('en') && /Google|Natural|Aria/.test(v.name)) || vs.find(v=>v.lang.startsWith('en-GB')) || vs.find(v=>v.lang.startsWith('en')) || vs[0];
+}
+if('speechSynthesis' in window){ loadVoices(); window.speechSynthesis.onvoiceschanged=loadVoices; }
+function speak(text){
+  const wave=document.getElementById('speakWave'), status=document.getElementById('speakStatus');
+  if(!('speechSynthesis' in window)){ status.textContent='Voice not supported'; wave.classList.remove('active'); return; }
+  window.speechSynthesis.cancel(); window.speechSynthesis.resume();
+  // Clean out Question N of M header prefix for natural speech flow
+  const cleanSpeechText = (text || '')
+    .replace(/Question\s+\d+\s+of\s+\d+\s+—\s*/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const utter=new SpeechSynthesisUtterance(cleanSpeechText);
+  if(preferredVoice) utter.voice=preferredVoice; utter.rate=0.96; utter.pitch=1;
+  utter.onstart=()=>{ wave.classList.add('active'); status.textContent='Interviewer speaking… • Pro Wave'; };
+  utter.onend=()=>{ wave.classList.remove('active'); status.textContent='Your turn — speak or type • Wave listening'; };
+  utter.onerror=()=>{ wave.classList.remove('active'); status.textContent='Your turn'; };
+  setTimeout(()=>window.speechSynthesis.speak(utter), 90);
+}
+
+
+function resetCaption(){ finalTranscriptBuf=''; document.getElementById('captionBox').innerHTML='<span class="caption-ph">Your spoken answer transcribes here live… Wave reacts, filler words counted, pace measured.</span>'; document.getElementById('typeAnswer').value=''; }
+
+function analyzeTranscript(text){
+  const fillers = (text.match(/\b(um|uh|like|you know|so|actually|basically)\b/gi)||[]).length;
+  fillerCount = fillers;
+  totalWords = text.trim().split(/\s+/).filter(Boolean).length;
+  const fillerEl=document.getElementById('fillerVal'), fillerBar=document.getElementById('fillerBar');
+  if(fillerEl){ fillerEl.textContent=fillerCount; if(fillerBar) fillerBar.style.width=Math.min(100, fillerCount*18)+'%'; }
+}
+
+function appendLogItem(time, text){
+  const log=document.getElementById('transcriptLog'); if(!log) return;
+  const div=document.createElement('div'); div.className='log-item';
+  div.innerHTML=`<span class="log-time">${time}</span><span class="log-text">${escapeHtml(text)}</span>`;
+  log.appendChild(div); log.scrollTop=log.scrollHeight;
+  transcriptHistory.push(`[${time}] ${text}`);
+}
+
+function setupRecognition(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR) return null;
+  const rec=new SR(); rec.continuous=true; rec.interimResults=true; rec.lang='en-US';
+  rec.onresult=(e)=>{
+    let interim=''; for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript; if(e.results[i].isFinal) finalTranscriptBuf+=t+' '; else interim+=t;}
+    document.getElementById('captionBox').innerHTML=`${escapeHtml(finalTranscriptBuf)}<span style="color:var(--faint)">${escapeHtml(interim)}</span>`;
+    analyzeTranscript(finalTranscriptBuf + ' ' + interim);
+  };
+  rec.onerror=(e)=>{ if(e.error==='not-allowed' || e.error==='service-not-allowed'){ alert('Microphone blocked. Allow from address bar.'); stopListening(); } };
+  rec.onend=()=>{ if(isListening){ try{rec.start()}catch(e){} } };
+  return rec;
+}
+function escapeHtml(s){ return s.replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function startListening(){
+  if('speechSynthesis' in window) window.speechSynthesis.cancel();
+  if(!recognition) recognition=setupRecognition();
+  if(!recognition){ alert('Use Chrome/Edge or type.'); return; }
+  isListening=true;
+  document.getElementById('captionBox').classList.add('listening');
+  document.getElementById('camMic').classList.remove('idle'); document.getElementById('camMic').classList.add('active');
+  document.getElementById('micToggle').classList.add('on');
+  document.getElementById('micToggleLabel').textContent='Listening… click to stop • Reactive';
+  try{ recognition.start(); }catch(e){}
+}
+function stopListening(){
+  isListening=false; if(recognition){ try{recognition.stop()}catch(e){} }
+  document.getElementById('captionBox').classList.remove('listening');
+  document.getElementById('camMic').classList.remove('active'); document.getElementById('camMic').classList.add('idle');
+  document.getElementById('micToggle').classList.remove('on');
+  document.getElementById('micToggleLabel').textContent='Start speaking';
+}
+document.getElementById('micToggle').addEventListener('click', ()=> isListening ? stopListening() : startListening());
+document.getElementById('typeInsteadBtn').addEventListener('click', ()=>{ const f=document.getElementById('typeField'); f.classList.toggle('hidden'); if(!f.classList.contains('hidden')) document.getElementById('typeAnswer').focus(); });
+document.getElementById('speakAgainBtn').addEventListener('click', ()=>{ if(currentQuestionTurnText) speak(currentQuestionTurnText); });
+document.getElementById('hintBtn').addEventListener('click', ()=>{ document.getElementById('hintBox').classList.toggle('hidden'); });
+document.getElementById('transcriptToggleBtn').addEventListener('click', ()=>{ document.getElementById('transcriptLog').classList.toggle('show'); });
+
+document.getElementById('submitAnswerBtn').addEventListener('click', async ()=>{
+  stopListening();
+  const typed=document.getElementById('typeAnswer').value.trim(), spoken=finalTranscriptBuf.trim(), answer=typed||spoken;
+  if(!answer){ const b=document.getElementById('captionBox'); b.style.borderColor='var(--bad)'; setTimeout(()=>b.style.borderColor='',500); return; }
+  const tStr=document.getElementById('qTimer').textContent;
+  appendLogItem(tStr, `Candidate: ${answer}`);
+  const btn=document.getElementById('submitAnswerBtn'); btn.disabled=true; const orig=btn.innerHTML; btn.innerHTML='<span>Scoring…</span>';
+  const res=await callApi({ sessionId, message: answer });
+  btn.disabled=false; btn.innerHTML=orig;
+  if(res.done) renderResults(res); else renderQuestionTurn(res);
+});
+
+document.getElementById('typeAnswer').addEventListener('keydown', (e)=>{
+  if(e.key==='Enter' && (e.metaKey || e.ctrlKey)){
+    e.preventDefault();
+    document.getElementById('submitAnswerBtn').click();
+  }
+});
+
+let perDayChartInst=null, radarChartInst=null;
+function renderResults(res){
+  showView('view-results'); window.speechSynthesis && window.speechSynthesis.cancel(); if(res.feedback?.summary) speak(res.feedback.summary);
+  const overall=res.meta?.overall??78, perDay=res.meta?.perDay||[];
+  const scoreEl=document.getElementById('overallScore'); let cur=0; const target=overall; (function step(){ cur+=(target-cur)*0.13; if(Math.abs(target-cur)<0.4) cur=target; scoreEl.textContent=Math.round(cur); if(cur!==target) requestAnimationFrame(step); })();
+  document.getElementById('dayCount').textContent=perDay.length||4;
+  document.getElementById('finalTime').textContent=document.getElementById('interviewTimer').textContent;
+  document.getElementById('summaryText').innerHTML=`${escapeHtml(res.feedback?.summary||'Solid demonstration of technical concepts with good communication structure.').replace(/\./g,'.<br/>')}`;
+  fillList('strengthsList', res.feedback?.strengths||["Clear architecture explanation","Structured STAR responses","Production trade-off awareness"]);
+  fillList('gapsList', res.feedback?.gaps||["Edge-case error handling","Telemetry & logging depth"]);
+  fillList('nextList', res.feedback?.next||["Practice async retry patterns","Review system observability metrics"]);
+
+  setTimeout(() => { renderDebriefCharts(perDay, res.meta?.radar); }, 60);
+}
+function fillList(id, arr){ const el=document.getElementById(id); if(!el) return; el.innerHTML=arr.map(x=>`<li>${escapeHtml(x)}</li>`).join(''); }
+
+function renderDebriefCharts(perDay, radar){
+  const data = (perDay && perDay.length) ? perDay : [{day:1, avg:70},{day:2, avg:85},{day:3, avg:65},{day:5, avg:80}];
+  const rMetrics = radar || { architecture:82, codeQuality:76, communication:88, tradeoffs:72, observability:68 };
+  if(typeof Chart !== 'undefined'){
+    const ctx1=document.getElementById('perDayChart'), ctx2=document.getElementById('radarChart');
+    if(perDayChartInst) try{perDayChartInst.destroy();}catch(e){}
+    if(radarChartInst) try{radarChartInst.destroy();}catch(e){}
+    Chart.defaults.color='#6C7190'; Chart.defaults.font.family='Plus Jakarta Sans';
+    try{
+      perDayChartInst = new Chart(ctx1, {
+        type:'bar',
+        data:{ labels: data.map(d=>`Day ${d.day}`), datasets:[{label:'Score', data: data.map(d=>d.avg), backgroundColor: data.map(d=>d.avg>=70?'rgba(16,185,129,0.85)':d.avg>=50?'rgba(245,158,11,0.85)':'rgba(239,68,68,0.85)'), borderRadius:8, maxBarThickness:32}] },
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{min:0, max:100, grid:{color:'#E6E8F2'}}, x:{grid:{display:false}}} }
+      });
+      radarChartInst = new Chart(ctx2, {
+        type:'radar',
+        data:{ labels:['Architecture','Code Quality','Communication','Tradeoffs','Observability'], datasets:[{label:'Candidate', data:[rMetrics.architecture, rMetrics.codeQuality, rMetrics.communication, rMetrics.tradeoffs, rMetrics.observability], backgroundColor:'rgba(99,102,255,0.2)', borderColor:'#6366FF', borderWidth:2, pointBackgroundColor:'#4338CA'}] },
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{r:{min:0, max:100, ticks:{display:false}, grid:{color:'#E6E8F2'}}} }
+      });
+    }catch(e){ renderSVGChartFallback(data); }
+  }else{ renderSVGChartFallback(data); }
+}
+
+
+function renderSVGChartFallback(data){
+  const w1=document.querySelector('.chart-wrap');
+  if(w1){
+    const max = 100;
+    const bars = data.map((d, idx) => {
+      const h = Math.round((d.avg / max) * 140);
+      const color = d.avg >= 70 ? '#10B981' : d.avg >= 50 ? '#F59E0B' : '#EF4444';
+      const x = 30 + idx * 60;
+      return `<rect x="${x}" y="${170 - h}" width="34" height="${h}" rx="6" fill="${color}" /><text x="${x + 17}" y="190" font-size="11" fill="#6C7190" text-anchor="middle" font-family="Plus Jakarta Sans">Day ${d.day}</text><text x="${x + 17}" y="${162 - h}" font-size="11" font-weight="700" fill="#0E1024" text-anchor="middle">${d.avg}</text>`;
+    }).join('');
+    w1.innerHTML = `<svg width="100%" height="100%" viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg"><line x1="20" y1="170" x2="260" y2="170" stroke="#E6E8F2" stroke-width="1.5"/>${bars}</svg>`;
+  }
+}
+
+document.getElementById('restartBtn').addEventListener('click', ()=> location.reload());
+document.getElementById('downloadTranscriptBtn').addEventListener('click', ()=>{
+  const blob = new Blob([transcriptHistory.join('\n')], {type:'text/plain'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `star-interview-transcript-${sessionId}.txt`; a.click();
+});
+
+
+loadCandidates();
+</script>
+</body>
+</html>

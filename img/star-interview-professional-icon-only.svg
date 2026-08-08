@@ -1,0 +1,107 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090B21"/>
+      <stop offset="40%" stop-color="#111638"/>
+      <stop offset="100%" stop-color="#1A2056"/>
+    </linearGradient>
+
+    <!-- Border Glow Gradient -->
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(165, 180, 252, 0.45)"/>
+      <stop offset="50%" stop-color="rgba(99, 102, 241, 0.25)"/>
+      <stop offset="100%" stop-color="rgba(79, 70, 229, 0.10)"/>
+    </linearGradient>
+
+    <!-- Main Star Metallic Indigo Gradient -->
+    <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A5B4FC"/>
+      <stop offset="35%" stop-color="#6366F1"/>
+      <stop offset="70%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#3730A3"/>
+    </linearGradient>
+
+    <!-- Core Radiant Accent -->
+    <linearGradient id="accentGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#818CF8"/>
+      <stop offset="100%" stop-color="#C084FC"/>
+    </linearGradient>
+
+    <!-- Wave Ring Gradient -->
+    <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.9"/>
+      <stop offset="50%" stop-color="#818CF8" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#C084FC" stop-opacity="0.9"/>
+    </linearGradient>
+
+    <!-- Soft Ambient Glow Filter -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="starGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="22" result="blur" />
+      <feComponentTransfer in="blur" result="boost">
+        <feFuncA type="linear" slope="0.6"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode in="boost"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background Base Container -->
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="url(#bgGrad)" stroke="url(#borderGrad)" stroke-width="3"/>
+
+  <!-- Subtle Radial Inner Highlight -->
+  <circle cx="256" cy="140" r="180" fill="url(#starGrad)" opacity="0.08" filter="blur(30px)"/>
+
+  <!-- Sound Intelligence Orbital Wave Rings -->
+  <g filter="url(#glow)">
+    <!-- Outer Audio Pulse Arc Left -->
+    <path d="M 124 256 A 132 132 0 0 1 256 124" fill="none" stroke="url(#waveGrad)" stroke-width="4" stroke-linecap="round" opacity="0.4" stroke-dasharray="8 8"/>
+    <!-- Outer Audio Pulse Arc Right -->
+    <path d="M 256 388 A 132 132 0 0 1 388 256" fill="none" stroke="url(#waveGrad)" stroke-width="4" stroke-linecap="round" opacity="0.4" stroke-dasharray="8 8"/>
+
+    <!-- Concentric Wave Orbit Ring -->
+    <circle cx="256" cy="256" r="156" fill="none" stroke="url(#accentGrad)" stroke-width="2.5" opacity="0.25" stroke-dasharray="4 12"/>
+  </g>
+
+  <!-- Voice Wave Indicator Bars (Symmetric AI Equalizer Motif) -->
+  <g opacity="0.85">
+    <rect x="106" y="240" width="8" height="32" rx="4" fill="url(#accentGrad)"/>
+    <rect x="124" y="220" width="8" height="72" rx="4" fill="url(#accentGrad)"/>
+    <rect x="142" y="200" width="8" height="112" rx="4" fill="url(#accentGrad)"/>
+
+    <rect x="362" y="200" width="8" height="112" rx="4" fill="url(#accentGrad)"/>
+    <rect x="380" y="220" width="8" height="72" rx="4" fill="url(#accentGrad)"/>
+    <rect x="398" y="240" width="8" height="32" rx="4" fill="url(#accentGrad)"/>
+  </g>
+
+  <!-- Central Star & Microphone Aperture Composition -->
+  <g filter="url(#starGlow)">
+    <!-- 4-Pointed Primary Hero Star -->
+    <path d="M 256 96 
+             C 256 180, 276 256, 416 256 
+             C 276 256, 256 332, 256 416 
+             C 256 332, 236 256, 96 256 
+             C 236 256, 256 180, 256 96 Z" 
+          fill="url(#starGrad)"/>
+
+    <!-- Secondary Accent Star (Rotated 45 degrees, translucent highlight) -->
+    <path d="M 256 160 
+             C 256 216, 280 256, 352 256 
+             C 280 256, 256 296, 256 352 
+             C 256 296, 232 256, 160 256 
+             C 232 256, 256 216, 256 160 Z" 
+          fill="url(#accentGrad)" opacity="0.75"/>
+
+    <!-- Inner Core Diamond Flare -->
+    <polygon points="256,216 276,256 256,296 236,256" fill="#FFFFFF" opacity="0.95"/>
+    <circle cx="256" cy="256" r="12" fill="#FFFFFF"/>
+  </g>
+</svg>
