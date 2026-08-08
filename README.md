@@ -1,4 +1,5 @@
 # ★ Star Interview
+<img width="512" height="512" alt="star-interview-professional-icon-only" src="https://github.com/user-attachments/assets/0cd09068-8b35-460d-92af-7a3d1ffdbd40" />
 
 An AI interview agent that conducts a live, spoken, adaptive technical
 interview based on a candidate's actual progress through the AI Cohort
