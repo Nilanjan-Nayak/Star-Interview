@@ -868,39 +868,162 @@ function fillList(id, arr){ const el=document.getElementById(id); if(!el) return
 function renderDebriefCharts(perDay, radar){
   const data = (perDay && perDay.length) ? perDay : [{day:1, avg:70},{day:2, avg:85},{day:3, avg:65},{day:5, avg:80}];
   const rMetrics = radar || { architecture:82, codeQuality:76, communication:88, tradeoffs:72, observability:68 };
-  if(typeof Chart !== 'undefined'){
-    const ctx1=document.getElementById('perDayChart'), ctx2=document.getElementById('radarChart');
-    if(perDayChartInst) try{perDayChartInst.destroy();}catch(e){}
-    if(radarChartInst) try{radarChartInst.destroy();}catch(e){}
-    Chart.defaults.color='#6C7190'; Chart.defaults.font.family='Plus Jakarta Sans';
+
+  const ctx1 = document.getElementById('perDayChart');
+  const ctx2 = document.getElementById('radarChart');
+
+  if(typeof Chart !== 'undefined' && ctx1 && ctx2){
+    if(perDayChartInst) try{ perDayChartInst.destroy(); }catch(e){}
+    if(radarChartInst) try{ radarChartInst.destroy(); }catch(e){}
+
     try{
+      Chart.defaults.color = '#6C7190';
+      if(!Chart.defaults.font) Chart.defaults.font = {};
+      Chart.defaults.font.family = 'Plus Jakarta Sans';
+
       perDayChartInst = new Chart(ctx1, {
-        type:'bar',
-        data:{ labels: data.map(d=>`Day ${d.day}`), datasets:[{label:'Score', data: data.map(d=>d.avg), backgroundColor: data.map(d=>d.avg>=70?'rgba(16,185,129,0.85)':d.avg>=50?'rgba(245,158,11,0.85)':'rgba(239,68,68,0.85)'), borderRadius:8, maxBarThickness:32}] },
-        options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{min:0, max:100, grid:{color:'#E6E8F2'}}, x:{grid:{display:false}}} }
+        type: 'bar',
+        data: {
+          labels: data.map(d => `Day ${d.day}`),
+          datasets: [{
+            label: 'Score',
+            data: data.map(d => d.avg),
+            backgroundColor: data.map(d => d.avg >= 70 ? 'rgba(16,185,129,0.85)' : d.avg >= 50 ? 'rgba(245,158,11,0.85)' : 'rgba(239,68,68,0.85)'),
+            borderRadius: 6,
+            maxBarThickness: 36
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: (c) => `Score: ${c.raw}/100` } }
+          },
+          scales: {
+            y: { min: 0, max: 100, grid: { color: '#E6E8F2' }, ticks: { stepSize: 25 } },
+            x: { grid: { display: false }, ticks: { maxRotation: 0, autoSkip: false } }
+          }
+        }
       });
+
       radarChartInst = new Chart(ctx2, {
-        type:'radar',
-        data:{ labels:['Architecture','Code Quality','Communication','Tradeoffs','Observability'], datasets:[{label:'Candidate', data:[rMetrics.architecture, rMetrics.codeQuality, rMetrics.communication, rMetrics.tradeoffs, rMetrics.observability], backgroundColor:'rgba(99,102,255,0.2)', borderColor:'#6366FF', borderWidth:2, pointBackgroundColor:'#4338CA'}] },
-        options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{r:{min:0, max:100, ticks:{display:false}, grid:{color:'#E6E8F2'}}} }
+        type: 'radar',
+        data: {
+          labels: ['Architecture', 'Code Quality', 'Communication', 'Tradeoffs', 'Observability'],
+          datasets: [{
+            label: 'Competency',
+            data: [rMetrics.architecture, rMetrics.codeQuality, rMetrics.communication, rMetrics.tradeoffs, rMetrics.observability],
+            backgroundColor: 'rgba(99,102,255,0.22)',
+            borderColor: '#6366FF',
+            borderWidth: 2,
+            pointBackgroundColor: '#4338CA',
+            pointRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            r: {
+              min: 0,
+              max: 100,
+              ticks: { display: false, stepSize: 25 },
+              grid: { color: '#E6E8F2' },
+              angleLines: { color: '#E6E8F2' },
+              pointLabels: { font: { size: 10, weight: '600' }, color: '#4B4E71' }
+            }
+          }
+        }
       });
-    }catch(e){ renderSVGChartFallback(data); }
-  }else{ renderSVGChartFallback(data); }
+      return;
+    }catch(err){
+      console.warn('[charts] Chart.js render failed, using SVG fallback:', err);
+    }
+  }
+
+  renderSVGChartFallback(data, rMetrics);
 }
 
+function renderSVGChartFallback(data, rMetrics){
+  const wraps = document.querySelectorAll('.chart-wrap');
+  if(!wraps || wraps.length < 2) return;
+  const w1 = wraps[0], w2 = wraps[1];
 
-function renderSVGChartFallback(data){
-  const w1=document.querySelector('.chart-wrap');
-  if(w1){
-    const max = 100;
-    const bars = data.map((d, idx) => {
-      const h = Math.round((d.avg / max) * 140);
-      const color = d.avg >= 70 ? '#10B981' : d.avg >= 50 ? '#F59E0B' : '#EF4444';
-      const x = 30 + idx * 60;
-      return `<rect x="${x}" y="${170 - h}" width="34" height="${h}" rx="6" fill="${color}" /><text x="${x + 17}" y="190" font-size="11" fill="#6C7190" text-anchor="middle" font-family="Plus Jakarta Sans">Day ${d.day}</text><text x="${x + 17}" y="${162 - h}" font-size="11" font-weight="700" fill="#0E1024" text-anchor="middle">${d.avg}</text>`;
-    }).join('');
-    w1.innerHTML = `<svg width="100%" height="100%" viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg"><line x1="20" y1="170" x2="260" y2="170" stroke="#E6E8F2" stroke-width="1.5"/>${bars}</svg>`;
-  }
+  // 1. Render Bar Chart SVG
+  const n = data.length || 4;
+  const svgW = 280;
+  const barW = Math.max(14, Math.min(30, Math.floor(190 / n)));
+  const spacing = (svgW - 40 - (barW * n)) / (n + 1);
+
+  const barsHTML = data.map((d, idx) => {
+    const h = Math.round((d.avg / 100) * 120);
+    const color = d.avg >= 70 ? '#10B981' : d.avg >= 50 ? '#F59E0B' : '#EF4444';
+    const x = 25 + spacing + idx * (barW + spacing);
+    return `
+      <rect x="${x.toFixed(1)}" y="${(150 - h).toFixed(1)}" width="${barW}" height="${h}" rx="4" fill="${color}" />
+      <text x="${(x + barW/2).toFixed(1)}" y="168" font-size="9" fill="#6C7190" text-anchor="middle" font-family="Plus Jakarta Sans">D${d.day}</text>
+      <text x="${(x + barW/2).toFixed(1)}" y="${Math.max(14, 143 - h).toFixed(1)}" font-size="9.5" font-weight="700" fill="#0E1024" text-anchor="middle">${d.avg}</text>
+    `;
+  }).join('');
+
+  w1.innerHTML = `
+    <div style="font-family:var(--mono); font-size:9.5px; color:var(--faint); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px;">Scores by Day</div>
+    <svg width="100%" height="100%" viewBox="0 0 280 180" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <line x1="15" y1="150" x2="265" y2="150" stroke="#E6E8F2" stroke-width="1.5"/>
+      ${barsHTML}
+    </svg>
+  `;
+
+  // 2. Render Radar Chart SVG
+  const rm = rMetrics || { architecture:82, codeQuality:76, communication:88, tradeoffs:72, observability:68 };
+  const vals = [rm.architecture, rm.codeQuality, rm.communication, rm.tradeoffs, rm.observability];
+  const labels = ['Arch', 'Code', 'Comm', 'Trade-offs', 'Obs'];
+  const cx = 140, cy = 92, maxR = 60;
+
+  const getPos = (i, val) => {
+    const angle = (i * 72 - 90) * (Math.PI / 180);
+    const r = (val / 100) * maxR;
+    return { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
+  };
+
+  const gridHTML = [0.33, 0.66, 1.0].map(scale => {
+    const pts = [0,1,2,3,4].map(i => {
+      const p = getPos(i, scale * 100);
+      return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+    }).join(' ');
+    return `<polygon points="${pts}" fill="none" stroke="#E6E8F2" stroke-width="1"/>`;
+  }).join('');
+
+  const axisHTML = [0,1,2,3,4].map(i => {
+    const outer = getPos(i, 100);
+    const lblPos = getPos(i, 124);
+    return `
+      <line x1="${cx}" y1="${cy}" x2="${outer.x.toFixed(1)}" y2="${outer.y.toFixed(1)}" stroke="#E6E8F2" stroke-width="1"/>
+      <text x="${lblPos.x.toFixed(1)}" y="${(lblPos.y + 3).toFixed(1)}" font-size="9" font-weight="600" fill="#6C7190" text-anchor="middle" font-family="Plus Jakarta Sans">${labels[i]}</text>
+    `;
+  }).join('');
+
+  const polyPts = vals.map((v, i) => {
+    const p = getPos(i, v);
+    return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+  }).join(' ');
+
+  const dotsHTML = vals.map((v, i) => {
+    const p = getPos(i, v);
+    return `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="#4338CA" stroke="#fff" stroke-width="1"/>`;
+  }).join('');
+
+  w2.innerHTML = `
+    <div style="font-family:var(--mono); font-size:9.5px; color:var(--faint); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px;">Competency Radar</div>
+    <svg width="100%" height="100%" viewBox="0 0 280 180" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      ${gridHTML}
+      ${axisHTML}
+      <polygon points="${polyPts}" fill="rgba(99,102,255,0.25)" stroke="#6366FF" stroke-width="2"/>
+      ${dotsHTML}
+    </svg>
+  `;
 }
 
 document.getElementById('restartBtn').addEventListener('click', ()=> location.reload());
@@ -914,3 +1037,4 @@ loadCandidates();
 </script>
 </body>
 </html>
+
