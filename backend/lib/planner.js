@@ -99,10 +99,29 @@ function buildQuestionPlan(candidate, difficulty = "medium", { minQuestions = 8,
     .filter((x) => x.day) // only days we have curriculum content for
     .sort((a, b) => b.risk - a.risk || a.m.day - b.m.day);
 
+  // Guarantee at least minDays (4) distinct curriculum days by supplementing from master curriculum if needed
+  if (ranked.length < minDays) {
+    const existingDayIds = new Set(ranked.map((x) => x.day.day));
+    for (const [dayNum, dayObj] of dayById.entries()) {
+      if (!existingDayIds.has(dayNum)) {
+        ranked.push({
+          m: { day: dayNum, title: dayObj.title, attempts: 1 },
+          risk: 1,
+          day: dayObj,
+        });
+        existingDayIds.add(dayNum);
+        if (ranked.length >= minDays) break;
+      }
+    }
+  }
+
   const dayCount = Math.max(minDays, Math.min(ranked.length, 6));
-  const chosenDays = ranked.slice(0, dayCount);
+  const chosenDays = ranked.slice(0, dayCount).sort((a, b) => a.day.day - b.day.day);
+
+
 
   const plan = [];
+
   // Pass 1: one question per chosen day, guarantees day coverage.
   chosenDays.forEach(({ m, day }) => {
     plan.push({

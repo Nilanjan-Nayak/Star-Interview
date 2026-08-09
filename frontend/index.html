@@ -118,11 +118,13 @@
     display:flex; flex-direction:column; gap:8px; z-index:3; pointer-events:none;
   }
   .coach-card{
-    background:rgba(14,16,36,0.74); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.14);
-    border-radius:12px; padding:8px 10px; min-width:84px; color:white; box-shadow:0 8px 24px rgba(0,0,0,0.24);
+    background:rgba(14,16,36,0.78); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.16);
+    border-radius:12px; padding:9px 11px; width:118px; color:white; box-shadow:0 8px 24px rgba(0,0,0,0.28);
+    box-sizing:border-box;
   }
-  .coach-label{font-family:var(--mono); font-size:8.5px; letter-spacing:0.1em; text-transform:uppercase; color:#A1A6C3; display:flex; justify-content:space-between; align-items:center;}
-  .coach-val{font-weight:800; font-size:13px; line-height:1; margin-top:4px; letter-spacing:-0.02em; display:flex; align-items:baseline; gap:3px;}
+  .coach-label{font-family:var(--mono); font-size:8.5px; letter-spacing:0.06em; text-transform:uppercase; color:#A1A6C3; display:flex; justify-content:space-between; align-items:center; gap:6px;}
+  .coach-val{font-weight:800; font-size:13.5px; line-height:1; margin-top:5px; letter-spacing:-0.02em; display:flex; align-items:baseline; gap:2px;}
+
   .coach-bar{height:3px; background:rgba(255,255,255,0.12); border-radius:999px; margin-top:6px; overflow:hidden;}
   .coach-bar span{display:block; height:100%; background:linear-gradient(90deg,#6366FF,#A5A8FF); border-radius:999px; transition:width 0.5s ease;}
 
@@ -473,7 +475,18 @@
   }
 
 
+  /* MOBILE PERFORMANCE & HARDWARE ACCELERATION OPTIMIZATIONS */
+  @media (max-width: 768px) {
+    .ambient-bg { display: none !important; }
+    .orb { filter: blur(6px) !important; }
+    .cam-pane, .panel, .question-box, .coach-card, .integrity-overlay {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+  }
+
   /* EXPANDABLE QUESTION-BY-QUESTION ANALYTICS ACCORDION */
+
   .turn-accordion-section {
     background: #FFFFFF;
     border: 1px solid var(--line);
@@ -682,11 +695,28 @@
         <div class="face-brackets" id="faceBrackets"><i></i></div>
 
         <div class="coaching" id="coachingHUD" style="display:none;">
-          <div class="coach-card"><div class="coach-label"><span>Eye Contact</span><span id="eyeStatus" style="color:var(--good); font-weight:700;">GOOD</span></div><div class="coach-val"><span id="eyeVal">85</span><span style="font-size:10px; color:#A1A6C3;">%</span></div><div class="coach-bar"><span id="eyeBar" style="width:85%"></span></div></div>
-          <div class="coach-card"><div class="coach-label"><span>Pace</span><span id="paceLbl">OPT</span></div><div class="coach-val"><span id="paceVal">--</span><span style="font-size:10px; color:#A1A6C3;">WPM</span></div><div class="coach-bar"><span id="paceBar" style="width:0%"></span></div></div>
-          <div class="coach-card"><div class="coach-label"><span>Fillers</span><span id="fillerLbl">0</span></div><div class="coach-val"><span id="fillerVal">0</span><span style="font-size:10px; color:#A1A6C3;">UM/UH</span></div><div class="coach-bar"><span id="fillerBar" style="width:0%; background:var(--warn);"></span></div></div>
-          <div class="coach-card"><div class="coach-label"><span>Energy</span><span id="energyLbl">MID</span></div><div class="coach-val"><span id="energyVal">--</span><span style="font-size:10px; color:#A1A6C3;">%</span></div><div class="coach-bar"><span id="energyBar" style="width:0%; background:var(--good);"></span></div></div>
+          <div class="coach-card">
+            <div class="coach-label"><span>Eye Contact</span><span id="eyeStatus" style="color:var(--good); font-weight:700;">GOOD</span></div>
+            <div class="coach-val"><span id="eyeVal">85</span><span style="font-size:10.5px; color:#A1A6C3; font-weight:600;">%</span></div>
+            <div class="coach-bar"><span id="eyeBar" style="width:85%"></span></div>
+          </div>
+          <div class="coach-card">
+            <div class="coach-label"><span>Pace</span><span id="paceLbl">OPT</span></div>
+            <div class="coach-val"><span id="paceVal">--</span><span style="font-size:10.5px; color:#A1A6C3; font-weight:600;">WPM</span></div>
+            <div class="coach-bar"><span id="paceBar" style="width:0%"></span></div>
+          </div>
+          <div class="coach-card">
+            <div class="coach-label"><span>Fillers</span><span id="fillerLbl">0</span></div>
+            <div class="coach-val"><span id="fillerVal">0</span><span style="font-size:10.5px; color:#A1A6C3; font-weight:600;">UM/UH</span></div>
+            <div class="coach-bar"><span id="fillerBar" style="width:0%; background:var(--warn);"></span></div>
+          </div>
+          <div class="coach-card">
+            <div class="coach-label"><span>Energy</span><span id="energyLbl">MID</span></div>
+            <div class="coach-val"><span id="energyVal">--</span><span style="font-size:10.5px; color:#A1A6C3; font-weight:600;">%</span></div>
+            <div class="coach-bar"><span id="energyBar" style="width:0%; background:var(--good);"></span></div>
+          </div>
         </div>
+
 
 
         <div class="hud-bottom">
@@ -743,10 +773,11 @@
         <div id="verdictLine" class="verdict hidden"></div>
 
         <div class="question-box">
-          <div class="qlabel">Interviewer asks • Studio live • Audio Wave Pro</div>
+          <div class="qlabel">Interviewer asks • Studio live</div>
           <div class="qtext" id="questionText">—</div>
-          <div class="speaking"><div class="pro-wave" id="speakWave"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><span id="speakStatus">Ready • Wave continuous</span></div>
+          <div class="speaking"><div class="pro-wave" id="speakWave"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><span id="speakStatus">Ready</span></div>
         </div>
+
 
         <div class="caption-box" id="captionBox"><span class="caption-ph">Your spoken answer transcribes here live… Wave reacts, filler words counted, pace measured.</span></div>
 
@@ -797,13 +828,49 @@
 </div>
 
 <script>
-// Starfield animation
+// Hardware-Accelerated Mobile Optimized Starfield Animation
 (function(){
-  const c=document.getElementById('stars'), ctx=c.getContext('2d',{alpha:true});
-  function rs(){c.width=innerWidth; c.height=innerHeight;} rs(); addEventListener('resize',rs);
-  const stars=Array.from({length:100},()=>({x:Math.random()*innerWidth, y:Math.random()*innerHeight, r:Math.random()*1.1+0.2, p:Math.random()*10, s:Math.random()*0.014+0.004}));
-  function tick(t){ ctx.clearRect(0,0,c.width,c.height); stars.forEach(s=>{ const a=0.14+0.20*Math.abs(Math.sin(s.p+t*0.0005*s.s*2)); ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fillStyle=`rgba(99,102,255,${a})`; ctx.fill(); }); requestAnimationFrame(tick);} requestAnimationFrame(tick);
-  const tc=document.getElementById('timecode'); let st=Date.now(); setInterval(()=>{const ms=Date.now()-st; const m=String(Math.floor(ms/60000)%60).padStart(2,'0'); const s=String(Math.floor(ms/1000)%60).padStart(2,'0'); const f=String(Math.floor((ms%1000)/16)).padStart(2,'0'); if(tc) tc.textContent=`00:${m}:${s}:${f}`;},40);
+  const c=document.getElementById('stars');
+  if (!c) return;
+  const ctx=c.getContext('2d',{alpha:true});
+  const isMobile = (window.innerWidth < 768) || ('ontouchstart' in window);
+
+  function rs(){ c.width = innerWidth; c.height = innerHeight; }
+  rs();
+  window.addEventListener('resize', rs, { passive: true });
+
+  const starCount = isMobile ? 35 : 75;
+  const stars = Array.from({ length: starCount }, () => ({
+    x: Math.random() * innerWidth,
+    y: Math.random() * innerHeight,
+    r: Math.random() * 1.1 + 0.2,
+    p: Math.random() * 10,
+    s: Math.random() * 0.014 + 0.004
+  }));
+
+  let lastFrame = 0;
+  const targetInterval = isMobile ? 33 : 16; // ~30FPS on mobile, 60FPS on desktop
+
+  function tick(t){
+    if (document.hidden) {
+      requestAnimationFrame(tick);
+      return;
+    }
+    if (t - lastFrame >= targetInterval) {
+      lastFrame = t;
+      ctx.clearRect(0, 0, c.width, c.height);
+      for (let i = 0; i < stars.length; i++) {
+        const s = stars[i];
+        const a = 0.14 + 0.20 * Math.abs(Math.sin(s.p + t * 0.0005 * s.s * 2));
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(99,102,255,${a})`;
+        ctx.fill();
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
 })();
 
 const API_BASE=(typeof window!=='undefined' && window.API_BASE) || '';
@@ -1004,16 +1071,16 @@ document.getElementById('camBtn').addEventListener('click', async()=>{
     // Live Video Frame Analysis Engine for Accurate Eye Contact % & Motion Tracking
     const camVideo = document.getElementById('cam');
     const eyeCanvas = document.createElement('canvas');
-    eyeCanvas.width = 160; eyeCanvas.height = 120;
+    eyeCanvas.width = 80; eyeCanvas.height = 60;
     const eyeCtx = eyeCanvas.getContext('2d', { willReadFrequently: true });
     let lastFrameData = null;
     let eyeSmooth = 82;
 
     setInterval(() => {
-      if (!camVideo || camVideo.paused || camVideo.ended || !camVideo.videoWidth) return;
+      if (document.hidden || !camVideo || camVideo.paused || camVideo.ended || !camVideo.videoWidth) return;
       try {
-        eyeCtx.drawImage(camVideo, 0, 0, 160, 120);
-        const frame = eyeCtx.getImageData(40, 20, 80, 80);
+        eyeCtx.drawImage(camVideo, 0, 0, 80, 60);
+        const frame = eyeCtx.getImageData(20, 10, 40, 40);
         const data = frame.data;
         let totalLum = 0, diffSum = 0;
 
@@ -1048,7 +1115,7 @@ document.getElementById('camBtn').addEventListener('click', async()=>{
 
         if (isListening) targetEye = Math.min(96, targetEye + 4);
 
-        eyeSmooth = eyeSmooth * 0.75 + targetEye * 0.25;
+        eyeSmooth = eyeSmooth * 0.7 + targetEye * 0.3;
         const finalPct = Math.round(Math.min(98, Math.max(15, eyeSmooth)));
 
         const eyeVal = document.getElementById('eyeVal');
@@ -1067,7 +1134,8 @@ document.getElementById('camBtn').addEventListener('click', async()=>{
       } catch (err) {
         console.warn('Eye tracking frame error', err);
       }
-    }, 300);
+    }, 500);
+
 
     interviewStart=Date.now();
     setInterval(()=>{
@@ -1188,10 +1256,11 @@ function renderQuestionTurn(res){
     }
     if(meta.coaching.energy){
       const eEl=document.getElementById('energyVal'), eBar=document.getElementById('energyBar'), eLbl=document.getElementById('energyLbl');
-      if(eEl) eEl.textContent=meta.coaching.energy.score+'%';
+      if(eEl) eEl.textContent=meta.coaching.energy.score;
       if(eBar) eBar.style.width=meta.coaching.energy.score+'%';
       if(eLbl) eLbl.textContent=meta.coaching.energy.status;
     }
+
   }
 
   const text=res.reply||''; currentQuestionTurnText=text;
@@ -1235,18 +1304,19 @@ function speak(text){
   if(preferredVoice) utter.voice=preferredVoice; utter.rate=0.96; utter.pitch=1;
 
   utter.onstart=()=>{
-    wave.classList.add('active'); status.textContent='Interviewer speaking… • Pro Wave';
+    wave.classList.add('active'); status.textContent='Interviewer speaking…';
     if(orbContainer) orbContainer.classList.add('speaking');
     if(orbStatus) orbStatus.textContent='AI Speaking…';
     if(orbDot) orbDot.classList.add('speaking');
   };
 
   utter.onend=()=>{
-    wave.classList.remove('active'); status.textContent='Your turn — speak or type • Wave listening';
+    wave.classList.remove('active'); status.textContent='Your turn — speak or type';
     if(orbContainer) orbContainer.classList.remove('speaking');
     if(orbStatus) orbStatus.textContent='AI Voice Ready';
     if(orbDot) orbDot.classList.remove('speaking');
   };
+
 
   utter.onerror=()=>{
     wave.classList.remove('active'); status.textContent='Your turn';
