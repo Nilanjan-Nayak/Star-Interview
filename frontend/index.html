@@ -185,9 +185,50 @@
   .conn.ok .dot{background:var(--good); box-shadow:0 0 0 3px rgba(16,185,129,0.16);} 
   .conn.demo .dot{background:var(--warn); box-shadow:0 0 0 3px rgba(245,158,11,0.18);}
 
-  .field{margin-bottom:14px;} .field label{font-family:var(--mono); font-size:10px; color:var(--faint); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px; display:flex; gap:5px;}
-  select,textarea{width:100%; background:var(--panel-2); border:1px solid var(--line); border-radius:11px; padding:11px 12px; font-family:var(--display); font-size:13.5px; outline:none; box-shadow:var(--sh-sm); transition:all .18s;}
-  select:focus,textarea:focus{border-color:var(--indigo-300); background:#fff; box-shadow:0 0 0 4px var(--indigo-50);}
+  .field{margin-bottom:16px;}
+  .field label{font-family:var(--mono); font-size:10px; color:var(--indigo-400); text-transform:uppercase; letter-spacing:0.12em; margin-bottom:8px; display:flex; gap:6px; align-items:center; font-weight:700;}
+  
+  select{
+    width:100%;
+    -webkit-appearance:none; -moz-appearance:none; appearance:none;
+    background-color: #FFFFFF;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.5 2L6 6.5L10.5 2' stroke='%234F46FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 12px 8px;
+    border: 1px solid var(--indigo-100);
+    border-radius: 14px;
+    padding: 13px 42px 13px 16px;
+    font-family: var(--display);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    outline: none;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(14, 16, 36, 0.05), 0 1px 2px rgba(14, 16, 36, 0.04);
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  select:hover{
+    border-color: var(--indigo-300);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.12);
+    transform: translateY(-1px);
+  }
+  select:focus{
+    border-color: var(--indigo-500);
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15), 0 8px 24px rgba(79, 70, 229, 0.14);
+  }
+  select option{
+    padding: 12px 16px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--ink);
+    background: #FFFFFF;
+  }
+
+  textarea{width:100%; background:var(--panel-2); border:1px solid var(--line); border-radius:14px; padding:12px 14px; font-family:var(--display); font-size:13.5px; outline:none; box-shadow:var(--sh-sm); transition:all .18s;}
+  textarea:focus{border-color:var(--indigo-300); background:#fff; box-shadow:0 0 0 4px var(--indigo-50);}
+
 
   .profile-card{background:linear-gradient(180deg,#FFFFFF,var(--panel-2)); border:1px solid var(--line); border-radius:16px; padding:14px; margin:2px 0 16px; box-shadow:var(--sh-sm); position:relative; overflow:hidden;}
   .profile-head{display:flex; gap:10px; align-items:center; margin-bottom:10px;}
@@ -265,116 +306,345 @@
   @keyframes viewIn{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)}}
   ::-webkit-scrollbar{width:5px; height:5px;} ::-webkit-scrollbar-thumb{background:#DADCF0; border-radius:10px;}
 
-  /* PRO INTEGRITY VIOLATION MODAL */
+  /* PRO EXECUTIVE INTEGRITY VIOLATION MODAL */
   .integrity-overlay{
     position:fixed; inset:0; z-index:9999;
-    background: rgba(10, 12, 30, 0.88); backdrop-filter: blur(16px);
-    display:flex; align-items:center; justify-content:center; padding:20px;
-    animation: integrityFadeIn .3s cubic-bezier(.16,1,.3,1);
+    background: rgba(8, 10, 26, 0.90); backdrop-filter: blur(20px);
+    display:flex; align-items:center; justify-content:center; padding:24px;
+    animation: integrityFadeIn .32s cubic-bezier(.16,1,.3,1);
   }
-  @keyframes integrityFadeIn{from{opacity:0; transform:scale(0.96)} to{opacity:1; transform:scale(1)}}
+  @keyframes integrityFadeIn{from{opacity:0; transform:scale(0.95)} to{opacity:1; transform:scale(1)}}
   .integrity-card{
-    background:#fff; border:1px solid rgba(239,68,68,0.25); border-radius:24px;
-    padding:36px 32px; max-width:520px; width:100%; text-align:center; box-shadow:0 24px 64px rgba(0,0,0,0.36);
+    background:#FFFFFF; border:1px solid rgba(239, 68, 68, 0.28); border-radius:28px;
+    padding:40px 36px 36px; max-width:540px; width:100%; text-align:center; box-shadow:0 32px 80px rgba(0,0,0,0.48), 0 0 0 1px rgba(255,255,255,0.6) inset;
     position:relative; overflow:hidden;
   }
   .integrity-card::before{
-    content:""; position:absolute; top:0; left:0; right:0; height:4px;
-    background: linear-gradient(90deg, #EF4444, #F59E0B, #EF4444);
+    content:""; position:absolute; top:0; left:0; right:0; height:5px;
+    background: linear-gradient(90deg, #F59E0B 0%, #EF4444 50%, #EC4899 100%);
   }
+  .integrity-icon-wrap{
+    position:relative; width:72px; height:72px; margin:0 auto 20px;
+    display:grid; place-items:center;
+  }
+  .integrity-icon-wrap::before{
+    content:""; position:absolute; inset:-6px; border-radius:24px;
+    background: rgba(239, 68, 68, 0.12); filter: blur(8px);
+    animation: pulseRing 2s ease-in-out infinite alternate;
+  }
+  @keyframes pulseRing{ from{transform:scale(0.94); opacity:0.6} to{transform:scale(1.08); opacity:1} }
   .integrity-icon{
-    width:64px; height:64px; border-radius:20px; background:#FEF2F2;
-    border:1px solid rgba(239,68,68,0.2); color:#EF4444; display:grid; place-items:center;
-    font-size:28px; margin:0 auto 20px; box-shadow: 0 8px 24px rgba(239,68,68,0.15);
+    width:72px; height:72px; border-radius:22px; background:linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%);
+    border:1px solid rgba(239,68,68,0.3); color:#EF4444; display:grid; place-items:center;
+    font-size:32px; box-shadow: 0 10px 28px rgba(239,68,68,0.22); position:relative; z-index:2;
+  }
+  .integrity-chip{
+    display:inline-flex; align-items:center; gap:6px; font-family:var(--mono);
+    font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+    color:#DC2626; background:#FEF2F2; border:1px solid rgba(239,68,68,0.2);
+    padding:4px 12px; border-radius:999px; margin-bottom:12px;
   }
   .integrity-title{
-    font-size:22px; font-weight:800; color:#0E1024; letter-spacing:-0.03em; margin:0 0 10px;
+    font-size:23px; font-weight:800; color:#0E1024; letter-spacing:-0.035em; margin:0 0 12px; line-height:1.25;
   }
   .integrity-msg{
-    font-size:13.5px; line-height:1.6; color:#6C7190; margin-bottom:20px;
+    font-size:13.5px; line-height:1.62; color:#525875; margin-bottom:22px; max-width:46ch; margin-left:auto; margin-right:auto;
   }
   .integrity-box{
-    background:#F8FAFF; border:1px solid #E6E8F2; border-radius:14px; padding:14px 16px;
-    margin-bottom:24px; text-align:left; font-family:var(--mono); font-size:11px; color:#4B4E71;
+    background:#F8FAFF; border:1px solid #E2E8F0; border-radius:18px; padding:18px 20px;
+    margin-bottom:26px; text-align:left; font-size:12px; box-shadow:0 2px 8px rgba(14,16,36,0.03);
+    display:flex; flex-direction:column; gap:10px;
   }
-  /* LIVE STAR METHOD PROGRESS BAR HUD */
-  .star-tracker-hud {
-    background: rgba(255, 255, 255, 0.76);
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--line-2);
-    border-radius: 14px;
-    padding: 10px 14px;
-    margin: 12px 0 10px 0;
-    box-shadow: 0 4px 18px rgba(14, 16, 36, 0.05);
+  .integrity-row{
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+    padding-bottom:8px; border-bottom:1px solid #EEF2FF;
   }
-  .star-tracker-hdr {
+  .integrity-row:last-child{ padding-bottom:0; border-bottom:none; }
+  .integrity-row-lbl{
+    font-family:var(--mono); font-size:10.5px; color:#64748B; font-weight:600;
+    display:flex; align-items:center; gap:6px; flex-shrink:0;
+  }
+  .integrity-row-val{
+    font-weight:700; color:#0F172A; text-align:right; word-break:break-all; font-size:12px;
+  }
+  .integrity-status-badge{
+    display:inline-flex; align-items:center; gap:5px; padding:3px 9px;
+    border-radius:6px; background:#FEF2F2; border:1px solid rgba(239,68,68,0.25);
+    color:#DC2626; font-family:var(--mono); font-size:10.5px; font-weight:700;
+  }
+  .integrity-btn{
+    width:100%; justify-content:center; padding:15px 28px; font-size:14px; font-weight:700;
+    letter-spacing:-0.01em; border-radius:999px; border:1px solid rgba(255,255,255,0.32);
+    background:linear-gradient(135deg, #EF4444 0%, #DC2626 50%, #B91C1C 100%);
+    box-shadow:0 12px 32px rgba(239, 68, 68, 0.38), 0 1px 2px rgba(255,255,255,0.4) inset;
+    color:#FFFFFF; text-shadow:0 1px 2px rgba(0,0,0,0.22); cursor:pointer;
+    display:inline-flex; align-items:center; gap:9px; transition:all 0.25s cubic-bezier(0.16,1,0.3,1);
+    position:relative; overflow:hidden; user-select:none;
+  }
+  .integrity-btn::after{
+    content:""; position:absolute; top:0; left:-100%; width:100%; height:100%;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    transition:left 0.6s ease;
+  }
+  .integrity-btn:hover{
+    transform:translateY(-3px) scale(1.01);
+    box-shadow:0 18px 46px rgba(239, 68, 68, 0.52), 0 0 0 4px rgba(239, 68, 68, 0.16), 0 1px 2px rgba(255,255,255,0.5) inset;
+    filter:brightness(1.08);
+  }
+  .integrity-btn:hover::after{
+    left:100%;
+  }
+  .integrity-btn:active{
+    transform:translateY(0) scale(0.98);
+    box-shadow:0 6px 20px rgba(239, 68, 68, 0.36);
+  }
+  .reset-spin{
+    display:inline-block; font-size:15px; font-weight:800;
+    transition:transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  /* CLEAN EXECUTIVE AI AGENT ORB ASSISTANT (NO BOX, NO HOVER SCALING, NO TEXT) */
+  .orb-container {
+    position: relative;
+    width: 68px;
+    height: 68px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 50%;
+    rotate: 90deg;
+    cursor: default;
+    filter: drop-shadow(0 0 10px rgba(255, 62, 28, 0.45)) drop-shadow(0 0 10px rgba(28, 140, 255, 0.45));
+    background: #060606;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+    user-select: none;
+  }
+  .orb {
+    position: absolute;
+    width: 68px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #060606;
+    filter: blur(14px);
+  }
+  .orb-inner {
+    position: absolute;
+    left: -120%;
+    top: -25%;
+    width: 160%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FF3E1C, #6366FF);
+    clip-path: polygon(
+      50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%,
+      50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%
+    );
+    animation: rotateOrb 6s linear infinite;
+  }
+  .orb-inner:nth-child(2) {
+    left: auto;
+    right: -120%;
+    top: auto;
+    bottom: -25%;
+    background: linear-gradient(135deg, #1C8CFF, #A855F7);
+    animation-duration: 8s;
+    clip-path: polygon(
+      20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%,
+      50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%
+    );
+  }
+  @keyframes rotateOrb {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .orb-container.speaking {
+    animation: orbSpeakingPulse 0.75s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 18px rgba(99, 102, 255, 0.95)) drop-shadow(0 0 22px rgba(255, 62, 28, 0.85));
+    border-color: rgba(99, 102, 255, 0.85);
+  }
+  .orb-container.speaking .orb-inner {
+    animation-duration: 1.8s;
+    width: 180%;
+  }
+  @keyframes orbSpeakingPulse {
+    0% { transform: scale(1.02); }
+    100% { transform: scale(1.15); }
+  }
+
+
+  /* EXPANDABLE QUESTION-BY-QUESTION ANALYTICS ACCORDION */
+  .turn-accordion-section {
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 16px;
+    margin-top: 16px;
+    box-shadow: var(--sh-sm);
+  }
+  .turn-accordion-hdr {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .turn-accordion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .turn-card {
+    border: 1px solid var(--line-2);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--panel-2);
+    transition: all 0.22s ease;
+  }
+  .turn-card:hover {
+    border-color: var(--indigo-300);
+    box-shadow: 0 4px 14px rgba(99, 102, 255, 0.08);
+  }
+  .turn-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    cursor: pointer;
+    user-select: none;
+    background: #FFFFFF;
+    transition: background 0.18s ease;
+  }
+  .turn-card-head:hover {
+    background: var(--indigo-50);
+  }
+  .turn-q-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+  }
+  .turn-q-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--indigo-50);
+    color: var(--indigo-600);
+    border: 1px solid var(--indigo-200);
+    display: grid;
+    place-items: center;
     font-family: var(--mono);
+    font-weight: 800;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+  .turn-q-title {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .turn-head-metrics {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .turn-chevron {
+    width: 18px;
+    height: 18px;
+    display: grid;
+    place-items: center;
     font-size: 10px;
+    color: var(--dim);
+    transition: transform 0.3s ease;
+  }
+  .turn-card.open .turn-chevron {
+    transform: rotate(180deg);
+    color: var(--indigo-600);
+  }
+  .turn-card-body {
+    display: none;
+    padding: 14px;
+    border-top: 1px solid var(--line);
+    background: #FDFDFF;
+    font-size: 12.5px;
+    line-height: 1.55;
+    animation: accordionFadeIn .22s ease-in-out;
+  }
+  @keyframes accordionFadeIn { from{opacity:0; transform:translateY(-4px)} to{opacity:1; transform:translateY(0)} }
+  .turn-card.open .turn-card-body {
+    display: block;
+  }
+  .turn-detail-box {
+    margin-bottom: 10px;
+  }
+  .turn-detail-box:last-child {
+    margin-bottom: 0;
+  }
+  .turn-detail-lbl {
+    font-family: var(--mono);
+    font-size: 9.5px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--dim);
-    margin-bottom: 8px;
-  }
-  .star-chips-row {
+    margin-bottom: 4px;
     display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
     align-items: center;
+    gap: 5px;
+    font-weight: 700;
   }
-  .star-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 12px 5px 7px;
-    border-radius: 999px;
-    font-size: 11.5px;
-    font-weight: 600;
-    background: #F1F3FB;
-    color: #64748B;
-    border: 1px solid #E2E8F0;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    user-select: none;
+  .turn-detail-content {
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 12px;
+    color: var(--ink);
+    font-size: 12.5px;
   }
-  .star-chip.active {
-    background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+  .turn-verdict-box {
+    background: linear-gradient(135deg, #EEF2FF 0%, #F5F3FF 100%);
+    border: 1px solid #C7D2FE;
+    border-left: 3px solid #4F46E5;
+    border-radius: 10px;
+    padding: 10px 12px;
     color: #3730A3;
-    border-color: #C7D2FE;
-    box-shadow: 0 4px 14px rgba(99, 102, 255, 0.24);
-    transform: translateY(-1px) scale(1.02);
+    font-weight: 600;
   }
-  .star-badge {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
+  .turn-metrics-grid {
     display: grid;
-    place-items: center;
-    font-size: 10.5px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .turn-metric-pill {
+    background: #FFFFFF;
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 8px 10px;
+    text-align: center;
+  }
+  .turn-metric-val {
     font-weight: 800;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .turn-metric-lbl {
     font-family: var(--mono);
-    background: #CBD5E1;
-    color: #475569;
-    transition: all 0.3s ease;
-  }
-  .star-chip.active .star-badge {
-    background: #4F46E5;
-    color: #FFFFFF;
-    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.35);
-  }
-  .star-check {
-    display: none;
-    font-size: 11px;
-    font-weight: 800;
-    color: #10B981;
-    margin-left: 2px;
-  }
-  .star-chip.active .star-check {
-    display: inline-block;
+    font-size: 9px;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-top: 2px;
   }
 
 </style>
+
+
 
 </head><body>
 <canvas id="stars"></canvas><div id="noise"></div>
@@ -453,32 +723,33 @@
       </div>
 
       <div id="view-interview" class="hidden view">
-        <div class="eyebrow" id="progressLabel">Question 1 of 8</div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;"><div class="constellation" id="constellation"></div><div id="timerChip" class="chip" style="padding:5px 10px;">🎙️ <span id="qTimer">00:00</span> on this question</div></div>
-        <div class="topic-tag" id="topicTag">Topic</div>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:12px;">
+          <div>
+            <div class="eyebrow" id="progressLabel">Question 1 of 8</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:6px;"><div class="constellation" id="constellation"></div><div id="timerChip" class="chip" style="padding:5px 10px;">🎙️ <span id="qTimer">00:00</span> on this question</div></div>
+            <div class="topic-tag" id="topicTag">Topic</div>
+          </div>
+
+          <!-- EXECUTIVE AI AGENT ORB ASSISTANT (CLEAN AVATAR) -->
+          <div class="orb-container" id="agentOrbContainer" title="Click orb avatar to replay interviewer voice">
+            <div class="orb">
+              <div class="orb-inner"></div>
+              <div class="orb-inner"></div>
+            </div>
+          </div>
+        </div>
+
 
         <div id="verdictLine" class="verdict hidden"></div>
+
         <div class="question-box">
           <div class="qlabel">Interviewer asks • Studio live • Audio Wave Pro</div>
           <div class="qtext" id="questionText">—</div>
           <div class="speaking"><div class="pro-wave" id="speakWave"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><span id="speakStatus">Ready • Wave continuous</span></div>
         </div>
 
-        <!-- LIVE STAR METHOD PROGRESS BAR HUD -->
-        <div class="star-tracker-hud" id="starTrackerHUD">
-          <div class="star-tracker-hdr">
-            <span>STAR Method Coverage</span>
-            <span id="starProgressScore" style="font-family:var(--mono); font-weight:700; color:var(--indigo-600);">0 / 4</span>
-          </div>
-          <div class="star-chips-row">
-            <div class="star-chip" id="starChipS" title="Situation — Context & problem setup"><span class="star-badge">S</span><span class="star-label">Situation</span><span class="star-check">✓</span></div>
-            <div class="star-chip" id="starChipT" title="Task — Goal & engineering requirements"><span class="star-badge">T</span><span class="star-label">Task</span><span class="star-check">✓</span></div>
-            <div class="star-chip" id="starChipA" title="Action — Technical steps & architecture"><span class="star-badge">A</span><span class="star-label">Action</span><span class="star-check">✓</span></div>
-            <div class="star-chip" id="starChipR" title="Result — Quantitative outcome & trade-offs"><span class="star-badge">R</span><span class="star-label">Result</span><span class="star-check">✓</span></div>
-          </div>
-        </div>
-
         <div class="caption-box" id="captionBox"><span class="caption-ph">Your spoken answer transcribes here live… Wave reacts, filler words counted, pace measured.</span></div>
+
 
 
         <div class="controls">
@@ -501,11 +772,25 @@
           <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
         </div>
         <div class="fb-grid" style="margin-top:12px;"><div class="fb-card strengths"><h3 style="color:var(--good);">Strengths</h3><ul id="strengthsList"></ul></div><div class="fb-card gaps"><h3 style="color:var(--warn);">Gaps</h3><ul id="gapsList"></ul></div><div class="fb-card next"><h3 style="color:var(--indigo-500);">Next</h3><ul id="nextList"></ul></div></div>
-        <div style="display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;">
+
+        <!-- EXPANDABLE QUESTION-BY-QUESTION ANALYTICS ACCORDION -->
+        <div class="turn-accordion-section" style="margin-top:18px;">
+          <div class="turn-accordion-hdr">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-weight:700; font-size:13.5px; color:var(--ink);">Question-by-Question Analytics</span>
+              <span class="chip" id="turnCountBadge" style="font-size:9.5px; background:var(--indigo-50); color:var(--indigo-600); border-color:var(--indigo-100);">4 Turns Evaluated</span>
+            </div>
+            <div style="font-size:10.5px; color:var(--dim);">Click to expand</div>
+          </div>
+          <div class="turn-accordion-list" id="turnAccordionList"></div>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-top:16px; flex-wrap:wrap;">
           <button class="primary-btn" id="restartBtn"><span>New interview</span> <span>↻</span></button>
           <button class="ghost-btn" id="downloadTranscriptBtn">⬇ Transcript .txt</button>
           <button class="ghost-btn" onclick="window.print()">🖨 PDF</button>
         </div>
+
       </div>
     </div>
   </div>
@@ -559,24 +844,41 @@ function triggerIntegrityViolation(reason) {
   overlay.id = 'integrityOverlay';
   overlay.innerHTML = `
     <div class="integrity-card">
-      <div class="integrity-icon">🛡️</div>
+      <div class="integrity-icon-wrap">
+        <div class="integrity-icon">🛡️</div>
+      </div>
+      <div class="integrity-chip">🔒 Security Safeguard Protocol</div>
       <div class="integrity-title">Interview Terminated — Security Safeguard</div>
       <div class="integrity-msg">
         Your technical interview session was automatically canceled due to a browser tab switch or window focus violation. Navigating away or switching tabs during a live assessment is strictly prohibited to uphold evaluation integrity.
       </div>
       <div class="integrity-box">
-        <div><b>Violation Detail:</b> ${escapeHtml(reason || "Tab switched or window focus lost")}</div>
-        <div><b>Timestamp:</b> ${timeStr}</div>
-        <div><b>Session ID:</b> ${sessionId}</div>
-        <div><b>Status:</b> Session Nullified & Terminated</div>
+        <div class="integrity-row">
+          <div class="integrity-row-lbl">⚠️ Violation Detail</div>
+          <div class="integrity-row-val">${escapeHtml(reason || "Tab switched or window focus lost")}</div>
+        </div>
+        <div class="integrity-row">
+          <div class="integrity-row-lbl">🕒 Timestamp</div>
+          <div class="integrity-row-val">${timeStr}</div>
+        </div>
+        <div class="integrity-row">
+          <div class="integrity-row-lbl">🔑 Session ID</div>
+          <div class="integrity-row-val" style="font-family:var(--mono); font-size:11px;">${sessionId}</div>
+        </div>
+        <div class="integrity-row">
+          <div class="integrity-row-lbl">🛡️ Status</div>
+          <div class="integrity-row-val"><span class="integrity-status-badge">Session Nullified & Terminated</span></div>
+        </div>
       </div>
-      <button class="primary-btn" onclick="location.reload()" style="width:100%; justify-content:center; background:linear-gradient(180deg,#EF4444,#DC2626); box-shadow:0 8px 24px rgba(239,68,68,0.35);">
-        <span>Acknowledge & Request Reset</span> <span>↻</span>
+      <button class="integrity-btn" onclick="location.reload()">
+        <span>Acknowledge & Request Reset</span> <span class="reset-spin">↻</span>
       </button>
+
     </div>
   `;
   document.body.appendChild(overlay);
 }
+
 
 // Security Event Listeners for Tab Switching & Window Focus Loss
 document.addEventListener('visibilitychange', () => {
@@ -920,55 +1222,45 @@ function loadVoices(){
 if('speechSynthesis' in window){ loadVoices(); window.speechSynthesis.onvoiceschanged=loadVoices; }
 function speak(text){
   const wave=document.getElementById('speakWave'), status=document.getElementById('speakStatus');
+  const orbContainer=document.getElementById('agentOrbContainer'), orbStatus=document.getElementById('agentOrbStatus'), orbDot=document.getElementById('agentOrbDot');
+
   if(!('speechSynthesis' in window)){ status.textContent='Voice not supported'; wave.classList.remove('active'); return; }
   window.speechSynthesis.cancel(); window.speechSynthesis.resume();
-  // Clean out Question N of M header prefix for natural speech flow
+
   const cleanSpeechText = (text || '')
     .replace(/Question\s+\d+\s+of\s+\d+\s+—\s*/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
   const utter=new SpeechSynthesisUtterance(cleanSpeechText);
   if(preferredVoice) utter.voice=preferredVoice; utter.rate=0.96; utter.pitch=1;
-  utter.onstart=()=>{ wave.classList.add('active'); status.textContent='Interviewer speaking… • Pro Wave'; };
-  utter.onend=()=>{ wave.classList.remove('active'); status.textContent='Your turn — speak or type • Wave listening'; };
-  utter.onerror=()=>{ wave.classList.remove('active'); status.textContent='Your turn'; };
+
+  utter.onstart=()=>{
+    wave.classList.add('active'); status.textContent='Interviewer speaking… • Pro Wave';
+    if(orbContainer) orbContainer.classList.add('speaking');
+    if(orbStatus) orbStatus.textContent='AI Speaking…';
+    if(orbDot) orbDot.classList.add('speaking');
+  };
+
+  utter.onend=()=>{
+    wave.classList.remove('active'); status.textContent='Your turn — speak or type • Wave listening';
+    if(orbContainer) orbContainer.classList.remove('speaking');
+    if(orbStatus) orbStatus.textContent='AI Voice Ready';
+    if(orbDot) orbDot.classList.remove('speaking');
+  };
+
+  utter.onerror=()=>{
+    wave.classList.remove('active'); status.textContent='Your turn';
+    if(orbContainer) orbContainer.classList.remove('speaking');
+    if(orbStatus) orbStatus.textContent='AI Voice Ready';
+    if(orbDot) orbDot.classList.remove('speaking');
+  };
+
   setTimeout(()=>window.speechSynthesis.speak(utter), 90);
 }
 
 
-function resetCaption(){ finalTranscriptBuf=''; document.getElementById('captionBox').innerHTML='<span class="caption-ph">Your spoken answer transcribes here live… Wave reacts, filler words counted, pace measured.</span>'; document.getElementById('typeAnswer').value=''; updateStarTracker(''); }
 
-function updateStarTracker(text) {
-  const t = (text || '').toLowerCase();
-  const sRegex = /\b(situation|when|project|team|company|built|working|legacy|system|app|service|form|database|user|problem|challenge|scaling|flaky|production|bug|issue|context|case|scenario|faced)\b/;
-  const tRegex = /\b(task|goal|needed|required|had to|objective|target|responsible|assigned|duty|must|fix|improve|refactor|migrate|optimize|reduce|ensure|solve|design|implement|requirement|needed to)\b/;
-  const aRegex = /\b(action|did|used|built|created|implemented|wrote|chose|decided|usereducer|usestate|react|api|cache|retry|jitter|backoff|circuit|query|sql|vector|index|architecture|code|tested|debugged|pattern|state|hook|approach|method)\b/;
-  const rRegex = /\b(result|outcome|improved|reduced|increased|faster|saved|percent|%|ms|seconds|latency|throughput|bugs|zero|stable|success|deployed|shipped|adopted|performance|metrics|trade-off|tradeoff|impact|achieved)\b/;
-
-  const wordCount = t.trim().split(/\s+/).filter(Boolean).length;
-
-  const hasS = wordCount > 0 && (sRegex.test(t) || wordCount >= 5);
-  const hasT = wordCount > 0 && (tRegex.test(t) || wordCount >= 12);
-  const hasA = wordCount > 0 && (aRegex.test(t) || wordCount >= 22);
-  const hasR = wordCount > 0 && (rRegex.test(t) || wordCount >= 36);
-
-  const sChip = document.getElementById('starChipS');
-  const tChip = document.getElementById('starChipT');
-  const aChip = document.getElementById('starChipA');
-  const rChip = document.getElementById('starChipR');
-
-  if (sChip) sChip.classList.toggle('active', hasS);
-  if (tChip) tChip.classList.toggle('active', hasT);
-  if (aChip) aChip.classList.toggle('active', hasA);
-  if (rChip) rChip.classList.toggle('active', hasR);
-
-  const activeCount = [hasS, hasT, hasA, hasR].filter(Boolean).length;
-  const scoreEl = document.getElementById('starProgressScore');
-  if (scoreEl) {
-    scoreEl.textContent = `${activeCount} / 4`;
-    scoreEl.style.color = activeCount === 4 ? 'var(--good)' : activeCount >= 2 ? 'var(--indigo-600)' : 'var(--dim)';
-  }
-}
+function resetCaption(){ finalTranscriptBuf=''; document.getElementById('captionBox').innerHTML='<span class="caption-ph">Your spoken answer transcribes here live… Wave reacts, filler words counted, pace measured.</span>'; document.getElementById('typeAnswer').value=''; }
 
 function analyzeTranscript(text){
   const fillers = (text.match(/\b(um|uh|like|you know|so|actually|basically)\b/gi)||[]).length;
@@ -992,10 +1284,9 @@ function setupRecognition(){
   rec.onresult=(e)=>{
     let interim=''; for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript; if(e.results[i].isFinal) finalTranscriptBuf+=t+' '; else interim+=t;}
     document.getElementById('captionBox').innerHTML=`${escapeHtml(finalTranscriptBuf)}<span style="color:var(--faint)">${escapeHtml(interim)}</span>`;
-    const fullText = finalTranscriptBuf + ' ' + interim;
-    analyzeTranscript(fullText);
-    updateStarTracker(fullText);
+    analyzeTranscript(finalTranscriptBuf + ' ' + interim);
   };
+
   rec.onerror=(e)=>{ if(e.error==='not-allowed' || e.error==='service-not-allowed'){ alert('Microphone blocked. Allow from address bar.'); stopListening(); } };
   rec.onend=()=>{ if(isListening){ try{rec.start()}catch(e){} } };
   return rec;
@@ -1025,24 +1316,39 @@ document.getElementById('typeInsteadBtn').addEventListener('click', ()=>{ const 
 document.getElementById('speakAgainBtn').addEventListener('click', ()=>{ if(currentQuestionTurnText) speak(currentQuestionTurnText); });
 
 
+let turnAnalyticsHistory = [];
+
 document.getElementById('submitAnswerBtn').addEventListener('click', async ()=>{
   stopListening();
   const typed=document.getElementById('typeAnswer').value.trim(), spoken=finalTranscriptBuf.trim(), answer=typed||spoken;
   if(!answer){ const b=document.getElementById('captionBox'); b.style.borderColor='var(--bad)'; setTimeout(()=>b.style.borderColor='',500); return; }
   const tStr=document.getElementById('qTimer').textContent;
   appendLogItem(tStr, `Candidate: ${answer}`);
+  
+  const currentQText = document.getElementById('questionText').textContent.trim();
+  const eyeVal = parseInt(document.getElementById('eyeVal').textContent) || 85;
+  const wpmVal = document.getElementById('paceVal').textContent || '135';
+  const fillerVal = parseInt(document.getElementById('fillerVal').textContent) || 0;
+
   const btn=document.getElementById('submitAnswerBtn'); btn.disabled=true; const orig=btn.innerHTML; btn.innerHTML='<span>Scoring…</span>';
   const res=await callApi({ sessionId, message: answer });
   btn.disabled=false; btn.innerHTML=orig;
+
+  turnAnalyticsHistory.push({
+    index: turnAnalyticsHistory.length + 1,
+    question: currentQText || `Question ${plan.index}`,
+    answer: answer,
+    verdict: res.meta?.verdict || res.reply || 'Evaluated candidate answer against STAR criteria.',
+    eyeContact: eyeVal,
+    wpm: wpmVal,
+    fillers: fillerVal,
+    timeStr: tStr
+  });
+
   if(res.done) renderResults(res); else renderQuestionTurn(res);
 });
 
-document.getElementById('typeAnswer').addEventListener('input', (e)=>{
-  updateStarTracker(e.target.value);
-});
-
 document.getElementById('typeAnswer').addEventListener('keydown', (e)=>{
-
   if(e.key==='Enter' && (e.metaKey || e.ctrlKey)){
     e.preventDefault();
     document.getElementById('submitAnswerBtn').click();
@@ -1061,8 +1367,113 @@ function renderResults(res){
   fillList('gapsList', res.feedback?.gaps||["Edge-case error handling","Telemetry & logging depth"]);
   fillList('nextList', res.feedback?.next||["Practice async retry patterns","Review system observability metrics"]);
 
+  renderTurnAccordion(turnAnalyticsHistory);
+
   setTimeout(() => { renderDebriefCharts(perDay, res.meta?.radar); }, 60);
 }
+
+function renderTurnAccordion(history){
+  const listEl = document.getElementById('turnAccordionList');
+  const countBadge = document.getElementById('turnCountBadge');
+  if(!listEl) return;
+
+  const items = (history && history.length > 0) ? history : [
+    {
+      index: 1,
+      question: "How do you manage complex asynchronous state and prevent race conditions in React?",
+      answer: "I use useReducer combined with explicit state machines and cancellation tokens via AbortController to ensure stale responses never mutate state.",
+      verdict: "Strong technical answer. Articulated cancellation tokens, state machine pattern, and clean side-effect isolation.",
+      eyeContact: 88,
+      wpm: "142",
+      fillers: 0,
+      timeStr: "01:15"
+    },
+    {
+      index: 2,
+      question: "Describe your approach to implementing retry mechanisms with exponential backoff and jitter.",
+      answer: "I implement full jitter backoff using Math.random() * min(cap, base * 2^attempt) to prevent thundering herd problems during backend outages.",
+      verdict: "Excellent understanding of distributed systems resilience and network call retries.",
+      eyeContact: 92,
+      wpm: "138",
+      fillers: 1,
+      timeStr: "02:40"
+    },
+    {
+      index: 3,
+      question: "How do you ensure zero-downtime database migrations with breaking schema changes?",
+      answer: "We follow the expand-contract pattern: first deploy non-breaking column additions, backfill data asynchronously, switch read/write paths, and drop old columns in a final step.",
+      verdict: "Clear operational knowledge of production database evolution without service interruption.",
+      eyeContact: 84,
+      wpm: "130",
+      fillers: 0,
+      timeStr: "04:05"
+    },
+    {
+      index: 4,
+      question: "How do you set up telemetry, distributed tracing, and key metrics in a microservices environment?",
+      answer: "We use OpenTelemetry SDKs to propagate W3C Trace Context headers across HTTP/gRPC boundaries and send metrics to Prometheus with P99 latency alerts.",
+      verdict: "Solid observability architecture covering trace propagation, metrics aggregation, and actionable alerting.",
+      eyeContact: 90,
+      wpm: "145",
+      fillers: 0,
+      timeStr: "05:22"
+    }
+  ];
+
+  if(countBadge) countBadge.textContent = `${items.length} ${items.length === 1 ? 'Turn' : 'Turns'} Evaluated`;
+
+  listEl.innerHTML = items.map((t, idx) => `
+    <div class="turn-card ${idx === 0 ? 'open' : ''}" id="turnCard-${idx}">
+      <div class="turn-card-head" onclick="toggleTurnCard(${idx})">
+        <div class="turn-q-meta">
+          <div class="turn-q-badge">Q${t.index}</div>
+          <div class="turn-q-title" title="${escapeHtml(t.question)}">${escapeHtml(t.question)}</div>
+        </div>
+        <div class="turn-head-metrics">
+          <span class="chip" style="font-size:9.5px; font-weight:700; background:rgba(16,185,129,0.08); color:var(--good); border-color:rgba(16,185,129,0.2);">👁️ ${t.eyeContact}% Eye</span>
+          <span class="turn-chevron">▼</span>
+        </div>
+      </div>
+      <div class="turn-card-body">
+        <div class="turn-detail-box">
+          <div class="turn-detail-lbl">❓ Question Asked</div>
+          <div class="turn-detail-content" style="font-weight:600; color:var(--ink);">${escapeHtml(t.question)}</div>
+        </div>
+        <div class="turn-detail-box">
+          <div class="turn-detail-lbl">💬 Candidate Transcribed Answer</div>
+          <div class="turn-detail-content" style="background:#F8FAFF; border-color:#E6E8F2; font-style:italic;">"${escapeHtml(t.answer)}"</div>
+        </div>
+        <div class="turn-detail-box">
+          <div class="turn-detail-lbl">⚖️ Gemini AI Technical Verdict</div>
+          <div class="turn-verdict-box">${escapeHtml(t.verdict)}</div>
+        </div>
+        <div class="turn-detail-box">
+          <div class="turn-detail-lbl">📊 Turn Coaching Metrics (${t.timeStr || 'Turn'})</div>
+          <div class="turn-metrics-grid">
+            <div class="turn-metric-pill">
+              <div class="turn-metric-val" style="color:var(--good);">${t.eyeContact}%</div>
+              <div class="turn-metric-lbl">Eye Contact</div>
+            </div>
+            <div class="turn-metric-pill">
+              <div class="turn-metric-val" style="color:var(--indigo-600);">${t.wpm}</div>
+              <div class="turn-metric-lbl">WPM Pace</div>
+            </div>
+            <div class="turn-metric-pill">
+              <div class="turn-metric-val" style="color:${t.fillers === 0 ? 'var(--good)' : 'var(--warn)'};">${t.fillers}</div>
+              <div class="turn-metric-lbl">Fillers</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleTurnCard(idx){
+  const card = document.getElementById(`turnCard-${idx}`);
+  if(card) card.classList.toggle('open');
+}
+
 function fillList(id, arr){ const el=document.getElementById(id); if(!el) return; el.innerHTML=arr.map(x=>`<li>${escapeHtml(x)}</li>`).join(''); }
 
 function renderDebriefCharts(perDay, radar){
@@ -1233,7 +1644,34 @@ document.getElementById('downloadTranscriptBtn').addEventListener('click', ()=>{
 });
 
 
+const agentOrbContainerEl = document.getElementById('agentOrbContainer');
+if(agentOrbContainerEl){
+  agentOrbContainerEl.addEventListener('click', ()=>{
+    if(currentQuestionTurnText) speak(currentQuestionTurnText);
+  });
+}
+
+// Global Security Safeguard: Prevent Right-Click Context Menu
+document.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  return false;
+});
+
+// Global Security Safeguard: Disable DevTools & Inspection Shortcuts
+document.addEventListener('keydown', (e) => {
+  if (
+    e.key === 'F12' ||
+    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) ||
+    (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))
+  ) {
+    e.preventDefault();
+    return false;
+  }
+});
+
 loadCandidates();
+
+
 </script>
 </body>
 </html>

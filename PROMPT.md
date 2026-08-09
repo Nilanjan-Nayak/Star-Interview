@@ -9,7 +9,7 @@
 
 ## 1. Executive Overview
 
-**Star Interview** is an AI technical interviewer platform designed to conduct live, spoken, adaptive interviews over technical curricula. Powered by **Google Gemini 2.0 Flash**, the platform dynamically evaluates candidate responses using the **STAR methodology**, calculates live video frame engagement metrics (Eye Contact %, WPM pace, filler word frequency, speech energy), displays a **Real-Time STAR Method Progress Bar HUD (`S` -> `T` -> `A` -> `R`)**, enforces anti-cheating security safeguards, and generates structured executive feedback reports.
+**Star Interview** is an AI technical interviewer platform designed to conduct live, spoken, adaptive interviews over technical curricula. Powered by **Google Gemini 2.0 Flash**, the platform dynamically evaluates candidate responses using the **STAR methodology**, calculates live video frame engagement metrics (Eye Contact %, WPM pace, filler word frequency, speech energy), enforces anti-cheating security safeguards, and generates structured executive feedback reports.
 
 ---
 
@@ -148,12 +148,7 @@ Return JSON Schema:
 
 ## 3. Real-Time HUD Coaching & Security Prompt System
 
-### 3.1 Real-Time STAR Method Progress Bar HUD (`S` -> `T` -> `A` -> `R`)
-- **Live Concept Detection:** Analyzes candidate speech transcription in real time.
-- **Dynamic Chip Lighting:** As candidate articulates Situation, Task, Action, and Result components, individual STAR chips light up with glowing indigo badges and green checkmarks (`✓`).
-- **Real-Time Score:** Displays `0 / 4` to `4 / 4` coverage counter.
-
-### 3.2 Live Video Frame Eye Contact & Motion Tracking Engine
+### 3.1 Live Video Frame Eye Contact & Motion Tracking Engine
 - **Canvas Sampling:** Samples live camera frames from `<video id="cam">` every 300ms onto a hidden 160x120 HTML5 canvas.
 - **Luminance & Alignment:** Calculates pixel luminance (`0.299*R + 0.587*G + 0.114*B`) and frame-to-frame pixel delta (motion variance).
 - **Metric Output:**
@@ -161,7 +156,7 @@ Return JSON Schema:
   - `eyeStatus`: Classified as `GOOD` (>=75%), `FAIR` (>=55%), or `LOW` (<55%).
   - `eyeBar`: Dynamic progress bar colored in green (`var(--good)`), amber (`var(--warn)`), or red (`var(--bad)`).
 
-### 3.3 Single-Tab Security & Anti-Cheating Protection
+### 3.2 Single-Tab Security & Anti-Cheating Protection
 - **Visibility Detection:** Listens to `document.addEventListener('visibilitychange')`.
 - **Focus Loss Protection:** Listens to `window.addEventListener('blur')`.
 - **Unload Guard:** Intercepts `beforeunload` to prevent tab closing or window navigation during an active session.
@@ -185,7 +180,6 @@ Return JSON Schema:
 | **09. Fix Eye Contact % Calculation** | Built live HTML5 canvas video frame analyzer for dynamic Eye Contact tracking and fixed label spacing. | `frontend/index.html` |
 | **10. Root Workspace Setup** | Added root `package.json` and clickable `http://localhost:3000` startup console banner. | `package.json`, `backend/server.js` |
 | **11. Animated Ambient Background** | Added smooth, fluid ambient background canvas (`.ambient-bg`) with floating glowing mesh blobs. | `frontend/index.html` |
-| **12. Live STAR Progress Bar HUD** | Built real-time STAR method progress indicator (`S` -> `T` -> `A` -> `R`) reacting live to transcript keywords. | `frontend/index.html` |
 
 ---
 
