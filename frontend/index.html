@@ -297,11 +297,85 @@
     background:#F8FAFF; border:1px solid #E6E8F2; border-radius:14px; padding:14px 16px;
     margin-bottom:24px; text-align:left; font-family:var(--mono); font-size:11px; color:#4B4E71;
   }
-  .integrity-box div{ margin-bottom:5px; }
-  .integrity-box div:last-child{ margin-bottom:0; }
-  .integrity-box b{ color:#0E1024; }
+  /* LIVE STAR METHOD PROGRESS BAR HUD */
+  .star-tracker-hud {
+    background: rgba(255, 255, 255, 0.76);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--line-2);
+    border-radius: 14px;
+    padding: 10px 14px;
+    margin: 12px 0 10px 0;
+    box-shadow: 0 4px 18px rgba(14, 16, 36, 0.05);
+  }
+  .star-tracker-hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 8px;
+  }
+  .star-chips-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .star-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px 5px 7px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 600;
+    background: #F1F3FB;
+    color: #64748B;
+    border: 1px solid #E2E8F0;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    user-select: none;
+  }
+  .star-chip.active {
+    background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+    color: #3730A3;
+    border-color: #C7D2FE;
+    box-shadow: 0 4px 14px rgba(99, 102, 255, 0.24);
+    transform: translateY(-1px) scale(1.02);
+  }
+  .star-badge {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 10.5px;
+    font-weight: 800;
+    font-family: var(--mono);
+    background: #CBD5E1;
+    color: #475569;
+    transition: all 0.3s ease;
+  }
+  .star-chip.active .star-badge {
+    background: #4F46E5;
+    color: #FFFFFF;
+    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.35);
+  }
+  .star-check {
+    display: none;
+    font-size: 11px;
+    font-weight: 800;
+    color: #10B981;
+    margin-left: 2px;
+  }
+  .star-chip.active .star-check {
+    display: inline-block;
+  }
 
 </style>
+
 </head><body>
 <canvas id="stars"></canvas><div id="noise"></div>
 <div class="ambient-bg">
@@ -389,7 +463,23 @@
           <div class="qtext" id="questionText">—</div>
           <div class="speaking"><div class="pro-wave" id="speakWave"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><span id="speakStatus">Ready • Wave continuous</span></div>
         </div>
+
+        <!-- LIVE STAR METHOD PROGRESS BAR HUD -->
+        <div class="star-tracker-hud" id="starTrackerHUD">
+          <div class="star-tracker-hdr">
+            <span>STAR Method Coverage</span>
+            <span id="starProgressScore" style="font-family:var(--mono); font-weight:700; color:var(--indigo-600);">0 / 4</span>
+          </div>
+          <div class="star-chips-row">
+            <div class="star-chip" id="starChipS" title="Situation — Context & problem setup"><span class="star-badge">S</span><span class="star-label">Situation</span><span class="star-check">✓</span></div>
+            <div class="star-chip" id="starChipT" title="Task — Goal & engineering requirements"><span class="star-badge">T</span><span class="star-label">Task</span><span class="star-check">✓</span></div>
+            <div class="star-chip" id="starChipA" title="Action — Technical steps & architecture"><span class="star-badge">A</span><span class="star-label">Action</span><span class="star-check">✓</span></div>
+            <div class="star-chip" id="starChipR" title="Result — Quantitative outcome & trade-offs"><span class="star-badge">R</span><span class="star-label">Result</span><span class="star-check">✓</span></div>
+          </div>
+        </div>
+
         <div class="caption-box" id="captionBox"><span class="caption-ph">Your spoken answer transcribes here live… Wave reacts, filler words counted, pace measured.</span></div>
+
 
         <div class="controls">
           <button class="mic-toggle" id="micToggle"><span class="dot"></span><span id="micToggleLabel">Start speaking</span></button>
@@ -846,7 +936,39 @@ function speak(text){
 }
 
 
-function resetCaption(){ finalTranscriptBuf=''; document.getElementById('captionBox').innerHTML='<span class="caption-ph">Your spoken answer transcribes here live… Wave reacts, filler words counted, pace measured.</span>'; document.getElementById('typeAnswer').value=''; }
+function resetCaption(){ finalTranscriptBuf=''; document.getElementById('captionBox').innerHTML='<span class="caption-ph">Your spoken answer transcribes here live… Wave reacts, filler words counted, pace measured.</span>'; document.getElementById('typeAnswer').value=''; updateStarTracker(''); }
+
+function updateStarTracker(text) {
+  const t = (text || '').toLowerCase();
+  const sRegex = /\b(situation|when|project|team|company|built|working|legacy|system|app|service|form|database|user|problem|challenge|scaling|flaky|production|bug|issue|context|case|scenario|faced)\b/;
+  const tRegex = /\b(task|goal|needed|required|had to|objective|target|responsible|assigned|duty|must|fix|improve|refactor|migrate|optimize|reduce|ensure|solve|design|implement|requirement|needed to)\b/;
+  const aRegex = /\b(action|did|used|built|created|implemented|wrote|chose|decided|usereducer|usestate|react|api|cache|retry|jitter|backoff|circuit|query|sql|vector|index|architecture|code|tested|debugged|pattern|state|hook|approach|method)\b/;
+  const rRegex = /\b(result|outcome|improved|reduced|increased|faster|saved|percent|%|ms|seconds|latency|throughput|bugs|zero|stable|success|deployed|shipped|adopted|performance|metrics|trade-off|tradeoff|impact|achieved)\b/;
+
+  const wordCount = t.trim().split(/\s+/).filter(Boolean).length;
+
+  const hasS = wordCount > 0 && (sRegex.test(t) || wordCount >= 5);
+  const hasT = wordCount > 0 && (tRegex.test(t) || wordCount >= 12);
+  const hasA = wordCount > 0 && (aRegex.test(t) || wordCount >= 22);
+  const hasR = wordCount > 0 && (rRegex.test(t) || wordCount >= 36);
+
+  const sChip = document.getElementById('starChipS');
+  const tChip = document.getElementById('starChipT');
+  const aChip = document.getElementById('starChipA');
+  const rChip = document.getElementById('starChipR');
+
+  if (sChip) sChip.classList.toggle('active', hasS);
+  if (tChip) tChip.classList.toggle('active', hasT);
+  if (aChip) aChip.classList.toggle('active', hasA);
+  if (rChip) rChip.classList.toggle('active', hasR);
+
+  const activeCount = [hasS, hasT, hasA, hasR].filter(Boolean).length;
+  const scoreEl = document.getElementById('starProgressScore');
+  if (scoreEl) {
+    scoreEl.textContent = `${activeCount} / 4`;
+    scoreEl.style.color = activeCount === 4 ? 'var(--good)' : activeCount >= 2 ? 'var(--indigo-600)' : 'var(--dim)';
+  }
+}
 
 function analyzeTranscript(text){
   const fillers = (text.match(/\b(um|uh|like|you know|so|actually|basically)\b/gi)||[]).length;
@@ -870,12 +992,15 @@ function setupRecognition(){
   rec.onresult=(e)=>{
     let interim=''; for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript; if(e.results[i].isFinal) finalTranscriptBuf+=t+' '; else interim+=t;}
     document.getElementById('captionBox').innerHTML=`${escapeHtml(finalTranscriptBuf)}<span style="color:var(--faint)">${escapeHtml(interim)}</span>`;
-    analyzeTranscript(finalTranscriptBuf + ' ' + interim);
+    const fullText = finalTranscriptBuf + ' ' + interim;
+    analyzeTranscript(fullText);
+    updateStarTracker(fullText);
   };
   rec.onerror=(e)=>{ if(e.error==='not-allowed' || e.error==='service-not-allowed'){ alert('Microphone blocked. Allow from address bar.'); stopListening(); } };
   rec.onend=()=>{ if(isListening){ try{rec.start()}catch(e){} } };
   return rec;
 }
+
 function escapeHtml(s){ return s.replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 function startListening(){
   if('speechSynthesis' in window) window.speechSynthesis.cancel();
@@ -912,7 +1037,12 @@ document.getElementById('submitAnswerBtn').addEventListener('click', async ()=>{
   if(res.done) renderResults(res); else renderQuestionTurn(res);
 });
 
+document.getElementById('typeAnswer').addEventListener('input', (e)=>{
+  updateStarTracker(e.target.value);
+});
+
 document.getElementById('typeAnswer').addEventListener('keydown', (e)=>{
+
   if(e.key==='Enter' && (e.metaKey || e.ctrlKey)){
     e.preventDefault();
     document.getElementById('submitAnswerBtn').click();
