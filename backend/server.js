@@ -198,5 +198,9 @@ app.get("/api/candidates", (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Star Interview backend listening on :${PORT} (LLM mode: ${llm.isEnabled() ? "ON" : "OFF (templated)"})`);
+  console.log(`\n==================================================`);
+  console.log(`🚀 Star Interview App running at: http://localhost:${PORT}`);
+  console.log(`⚡ Mode: LLM ${llm.isEnabled() ? "ON (Gemini 2.0 Flash)" : "OFF (templated)"}`);
+  console.log(`==================================================\n`);
 });
+

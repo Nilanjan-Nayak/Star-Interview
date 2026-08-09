@@ -1,0 +1,10 @@
+{
+  "name": "star-interview",
+  "version": "1.0.0",
+  "description": "Star Interview - AI Technical Interviewer Platform",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node backend/server.js"
+  }
+}

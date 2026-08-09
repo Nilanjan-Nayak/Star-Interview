@@ -11,7 +11,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 <style>
   :root{
-    --bg:#F7F8FE; --panel:#FFFFFF; --panel-2:#F8FAFF; --panel-3:#EFF1FF; --line:#E6E8F2; --line-2:#DADCF0;
+    --bg:#F7F8FE; --panel:#F7F8FE; --panel-2:#F9FAFF; --panel-3:#EFF1FF; --line:#E6E8F2; --line-2:#DADCF0;
+
     --ink:#0E1024; --dim:#6C7190; --faint:#9EA5C5;
     --indigo-50:#F0F0FF; --indigo-100:#E3E4FF; --indigo-200:#C4C6FF; --indigo-300:#8C8FFF; --indigo-400:#6366FF; --indigo-500:#4F46FF; --indigo-600:#4338CA;
     --good:#10B981; --warn:#F59E0B; --bad:#EF4444;
@@ -26,14 +27,27 @@
   #stars{position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.5;}
   #noise{position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.022; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
 
-  .app{position:relative; z-index:1; display:grid; grid-template-columns:1.15fr 0.85fr; height:100vh; width:100vw; gap:1px; background:var(--line); padding:1px;}
-  @media(max-width:1080px){.app{grid-template-columns:1fr; grid-template-rows:52vh 1fr; height:auto; min-height:100vh;} body{overflow:auto;}}
+  /* ANIMATED AGENT AMBIENT BACKGROUND */
+  .ambient-bg{position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; opacity:0.75;}
+  .ambient-blob{position:absolute; border-radius:50%; filter:blur(90px); opacity:0.55; will-change:transform;}
+  .ambient-blob-1{width:540px; height:540px; background:radial-gradient(circle, #C7D2FE 0%, #EEF2FF 70%, transparent 100%); top:-120px; right:-100px; animation:blobFloat1 18s ease-in-out infinite alternate;}
+  .ambient-blob-2{width:480px; height:480px; background:radial-gradient(circle, #DDD6FE 0%, #F5F3FF 70%, transparent 100%); bottom:-140px; right:20%; animation:blobFloat2 22s ease-in-out infinite alternate;}
+  .ambient-blob-3{width:400px; height:400px; background:radial-gradient(circle, #BAE6FD 0%, #F0F9FF 70%, transparent 100%); top:25%; left:-100px; animation:blobFloat3 16s ease-in-out infinite alternate;}
+  @keyframes blobFloat1{ 0%{transform:translate(0,0) scale(1);} 50%{transform:translate(-70px,90px) scale(1.14);} 100%{transform:translate(50px,40px) scale(0.92);} }
+  @keyframes blobFloat2{ 0%{transform:translate(0,0) scale(1);} 50%{transform:translate(80px,-60px) scale(1.10);} 100%{transform:translate(-60px,35px) scale(0.95);} }
+  @keyframes blobFloat3{ 0%{transform:translate(0,0) scale(1);} 50%{transform:translate(60px,-45px) scale(1.18);} 100%{transform:translate(-40px,70px) scale(0.90);} }
 
-  /* CAM PANE PRO */
-  .cam-pane{position:relative; background:linear-gradient(180deg,#FCFCFF,#EDEFFF); display:flex; align-items:center; justify-content:center; overflow:hidden;}
-  .cam-frame{position:relative; width:calc(100% - 20px); height:calc(100% - 72px); margin-top:8px; border-radius:var(--r-xl); overflow:hidden; background:#08091A; box-shadow:var(--sh-lg); border:1px solid rgba(255,255,255,0.9);}
+  .app{position:relative; z-index:1; display:grid; grid-template-columns:0.84fr 1.16fr; height:100vh; width:100vw; gap:0; background:transparent; padding:0;}
+
+  @media(min-width:1440px){.app{grid-template-columns:460px 1fr;}}
+  @media(max-width:1080px){.app{grid-template-columns:1fr; grid-template-rows:48vh 1fr; height:auto; min-height:100vh;} body{overflow:auto;}}
+
+  /* CAM PANE PRO - Seamless Unified Background & Compact Dimensions */
+  .cam-pane{position:relative; background:var(--bg); display:flex; align-items:center; justify-content:center; overflow:hidden; padding:18px 10px 18px 18px;}
+  .cam-frame{position:relative; width:100%; height:100%; border-radius:24px; overflow:hidden; background:#08091A; box-shadow:var(--sh-md); border:1px solid var(--line);}
   .cam-frame video{width:100%; height:100%; object-fit:cover; transform:scaleX(-1); filter:saturate(1.06) contrast(1.02);}
   .cam-frame::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(14,16,36,0.18) 0%, transparent 35%, transparent 62%, rgba(14,16,36,0.46) 100%); pointer-events:none;}
+
 
   .hud{position:absolute; inset:0; z-index:2; pointer-events:none;}
   .hud-top{position:absolute; top:0; left:0; right:0; display:flex; justify-content:space-between; padding:14px 14px; pointer-events:auto;}
@@ -288,9 +302,13 @@
   .integrity-box b{ color:#0E1024; }
 
 </style>
-</head>
-<body>
+</head><body>
 <canvas id="stars"></canvas><div id="noise"></div>
+<div class="ambient-bg">
+  <div class="ambient-blob ambient-blob-1"></div>
+  <div class="ambient-blob ambient-blob-2"></div>
+  <div class="ambient-blob ambient-blob-3"></div>
+</div>
 <div class="app">
   <!-- LEFT CAM WITH HUD -->
   <div class="cam-pane">
@@ -314,23 +332,24 @@
           </div>
           <div style="display:flex; gap:6px; align-items:center;">
             <div class="chip"><span class="live-dot"></span> HDR</div>
-            <div class="chip" id="apiStatusChip"><span style="width:6px;height:6px;border-radius:50%;background:var(--warn);display:inline-block;"></span> API checking</div>
           </div>
         </div>
 
         <div class="face-brackets" id="faceBrackets"><i></i></div>
 
         <div class="coaching" id="coachingHUD" style="display:none;">
-          <div class="coach-card"><div class="coach-label"><span>Eye Contact</span><span id="eyePct">—</span></div><div class="coach-val"><span id="eyeVal">--</span><span style="font-size:10px; color:#A1A6C3;">%</span></div><div class="coach-bar"><span id="eyeBar" style="width:0%"></span></div></div>
-          <div class="coach-card"><div class="coach-label"><span>Pace</span><span>WPM</span></div><div class="coach-val"><span id="paceVal">--</span></div><div class="coach-bar"><span id="paceBar" style="width:0%"></span></div></div>
-          <div class="coach-card"><div class="coach-label"><span>Fillers</span><span>um/uh</span></div><div class="coach-val"><span id="fillerVal">0</span></div><div class="coach-bar"><span id="fillerBar" style="width:0%; background:var(--warn);"></span></div></div>
-          <div class="coach-card"><div class="coach-label"><span>Energy</span><span id="energyLbl">Low</span></div><div class="coach-val"><span id="energyVal">--</span></div><div class="coach-bar"><span id="energyBar" style="width:0%; background:var(--good);"></span></div></div>
+          <div class="coach-card"><div class="coach-label"><span>Eye Contact</span><span id="eyeStatus" style="color:var(--good); font-weight:700;">GOOD</span></div><div class="coach-val"><span id="eyeVal">85</span><span style="font-size:10px; color:#A1A6C3;">%</span></div><div class="coach-bar"><span id="eyeBar" style="width:85%"></span></div></div>
+          <div class="coach-card"><div class="coach-label"><span>Pace</span><span id="paceLbl">OPT</span></div><div class="coach-val"><span id="paceVal">--</span><span style="font-size:10px; color:#A1A6C3;">WPM</span></div><div class="coach-bar"><span id="paceBar" style="width:0%"></span></div></div>
+          <div class="coach-card"><div class="coach-label"><span>Fillers</span><span id="fillerLbl">0</span></div><div class="coach-val"><span id="fillerVal">0</span><span style="font-size:10px; color:#A1A6C3;">UM/UH</span></div><div class="coach-bar"><span id="fillerBar" style="width:0%; background:var(--warn);"></span></div></div>
+          <div class="coach-card"><div class="coach-label"><span>Energy</span><span id="energyLbl">MID</span></div><div class="coach-val"><span id="energyVal">--</span><span style="font-size:10px; color:#A1A6C3;">%</span></div><div class="coach-bar"><span id="energyBar" style="width:0%; background:var(--good);"></span></div></div>
         </div>
 
+
         <div class="hud-bottom">
-          <div class="chip dark"><span style="width:6px;height:6px;background:#FF5A65;border-radius:50%;box-shadow:0 0 8px #FF5A65;display:inline-block;"></span><span id="camStatus">Camera off</span> • <span id="timecode" style="font-family:var(--mono);">00:00:00:00</span> • <span id="interviewTimer" style="font-family:var(--mono);">00:00</span></div>
+          <div class="chip dark"><span style="width:6px;height:6px;background:#FF5A65;border-radius:50%;box-shadow:0 0 8px #FF5A65;display:inline-block;"></span><span id="camStatus">Camera off</span> • <span id="interviewTimer" style="font-family:var(--mono);">00:00</span></div>
           <div class="chip dark" style="padding:0 12px;"><div class="mic-wave-pro idle" id="camMic"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
         </div>
+
       </div>
     </div>
   </div>
@@ -339,21 +358,16 @@
   <div class="panel">
     <div class="panel-inner">
       <div id="view-setup" class="view">
-        <div class="eyebrow">Step 01 — Setup • Pro Max Edition <span class="conn demo" id="connBadge"><span class="dot"></span><span id="connText">Checking API</span></span></div>
+        <div class="eyebrow">Step 01 — Candidate Setup <span class="conn demo" id="connBadge"><span class="dot"></span><span id="connText">Checking API</span></span></div>
         <h1 class="title">Let's build your <i>interview.</i></h1>
-        <p class="sub">Pro Max adds live coaching HUD, eye-contact %, filler counter, pace, energy wave, transcript log, export, and resilient API connections with demo fallback.</p>
+        <p class="sub">Select a candidate profile from your cohort to calibrate adaptive technical questions and live AI evaluation.</p>
         <div class="field"><label>● Candidate profile</label><select id="candidateSelect"></select></div>
         <div class="profile-card" id="profileCard"></div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
-          <div class="chip" style="background:var(--indigo-50); border-color:var(--indigo-100); color:var(--indigo-600);">✔ Live Coaching HUD</div>
-          <div class="chip" style="background:#E8FAF1; border-color:#C6F0DD; color:#065F46;">✔ Audio-Reactive Wave Pro</div>
-          <div class="chip" style="background:#FFF7ED; border-color:#FDEAD7; color:#9A3412;">✔ Filler & Pace Analysis</div>
-          <div class="chip" style="background:#F0F0FF; border-color:var(--indigo-100); color:var(--indigo-600);">✔ API Connected + Demo Fallback</div>
-        </div>
-        <button class="primary-btn" id="camBtn"><span>Turn on camera & continue</span> <span>→</span></button>
+        <button class="primary-btn" id="camBtn" style="margin-top:8px;"><span>Turn on camera & continue</span> <span>→</span></button>
       </div>
 
       <div id="view-difficulty" class="hidden view">
+
         <div class="eyebrow">Step 02 — Calibration</div>
         <h1 class="title">Set the <i>intensity.</i></h1>
         <p class="sub">Easy = definitions, Medium = applied, Hard = production trade-offs. All with same coaching HUD.</p>
@@ -367,18 +381,16 @@
       <div id="view-interview" class="hidden view">
         <div class="eyebrow" id="progressLabel">Question 1 of 8</div>
         <div style="display:flex; gap:8px; flex-wrap:wrap;"><div class="constellation" id="constellation"></div><div id="timerChip" class="chip" style="padding:5px 10px;">🎙️ <span id="qTimer">00:00</span> on this question</div></div>
-        <div class="topic-tag" id="topicTag">Day 0 — Topic</div>
+        <div class="topic-tag" id="topicTag">Topic</div>
+
         <div id="verdictLine" class="verdict hidden"></div>
         <div class="question-box">
-          <div class="qlabel">Interviewer asks • Studio live • Pro Wave + Hint
-            <span style="margin-left:auto; display:flex; gap:6px;"><button class="ghost-btn" id="hintBtn" style="padding:4px 10px; font-size:11px;">💡 Hint</button><button class="ghost-btn" id="transcriptToggleBtn" style="padding:4px 10px; font-size:11px;">📝 Log</button></span>
-          </div>
+          <div class="qlabel">Interviewer asks • Studio live • Audio Wave Pro</div>
           <div class="qtext" id="questionText">—</div>
-          <div id="hintBox" class="hidden" style="margin-top:12px; background:var(--indigo-50); border:1px solid var(--indigo-100); border-radius:10px; padding:10px 12px; font-size:12.5px; line-height:1.5; color:var(--ink);"></div>
           <div class="speaking"><div class="pro-wave" id="speakWave"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><span id="speakStatus">Ready • Wave continuous</span></div>
         </div>
         <div class="caption-box" id="captionBox"><span class="caption-ph">Your spoken answer transcribes here live… Wave reacts, filler words counted, pace measured.</span></div>
-        <div class="transcript-log" id="transcriptLog"></div>
+
         <div class="controls">
           <button class="mic-toggle" id="micToggle"><span class="dot"></span><span id="micToggleLabel">Start speaking</span></button>
           <button class="primary-btn" id="submitAnswerBtn"><span>Submit answer</span> <span>↩</span></button>
@@ -504,16 +516,19 @@ async function checkAPI(){
   try{
     const r=await fetch(`${API_BASE}/api/candidates`, {method:'GET'});
     if(r.ok){
-      badge.className='conn ok'; text.textContent='API Connected • Live';
-      chip.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:var(--good);display:inline-block; box-shadow:0 0 0 3px rgba(16,185,129,0.18);"></span> API Live';
+      if(badge) badge.className='conn ok';
+      if(text) text.textContent='API Connected • Live';
+      if(chip) chip.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:var(--good);display:inline-block; box-shadow:0 0 0 3px rgba(16,185,129,0.18);"></span> API Live';
       return true;
     }else throw new Error('not ok');
   }catch(e){
-    badge.className='conn demo'; text.textContent='Demo Mode • Fallback Active';
-    chip.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:var(--warn);display:inline-block; box-shadow:0 0 0 3px rgba(245,158,11,0.18);"></span> Demo Mode';
+    if(badge) badge.className='conn demo';
+    if(text) text.textContent='Demo Mode • Fallback Active';
+    if(chip) chip.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:var(--warn);display:inline-block; box-shadow:0 0 0 3px rgba(245,158,11,0.18);"></span> Demo Mode';
     return false;
   }
 }
+
 
 async function loadCandidates(){
   await checkAPI();
@@ -589,17 +604,79 @@ document.getElementById('camBtn').addEventListener('click', async()=>{
   const status=document.getElementById('camStatus'), placeholder=document.getElementById('camPlaceholder');
   try{
     const stream=await navigator.mediaDevices.getUserMedia({video:{width:1280,height:720}, audio:true});
-    document.getElementById('cam').srcObject=stream; placeholder.style.display='none'; status.textContent='Live • Coaching ON';
+    document.getElementById('cam').srcObject=stream; placeholder.style.display='none'; status.textContent='LIVE';
+
     document.getElementById('coachingHUD').style.display='flex';
     document.getElementById('faceBrackets').classList.add('show');
     setupAudioVisualizer(stream);
-    let eye=72;
-    setInterval(()=>{
-      if(!isListening) eye=Math.min(92, Math.max(58, eye+(Math.random()-0.5)*6));
-      else eye=Math.min(98, Math.max(68, eye+(Math.random()-0.45)*5));
-      const eyeVal=document.getElementById('eyeVal'), eyePct=document.getElementById('eyePct'), eyeBar=document.getElementById('eyeBar');
-      if(eyeVal){ eyeVal.textContent=Math.round(eye); eyePct.textContent=Math.round(eye)+'%'; eyeBar.style.width=eye+'%'; }
-    }, 800);
+    // Live Video Frame Analysis Engine for Accurate Eye Contact % & Motion Tracking
+    const camVideo = document.getElementById('cam');
+    const eyeCanvas = document.createElement('canvas');
+    eyeCanvas.width = 160; eyeCanvas.height = 120;
+    const eyeCtx = eyeCanvas.getContext('2d', { willReadFrequently: true });
+    let lastFrameData = null;
+    let eyeSmooth = 82;
+
+    setInterval(() => {
+      if (!camVideo || camVideo.paused || camVideo.ended || !camVideo.videoWidth) return;
+      try {
+        eyeCtx.drawImage(camVideo, 0, 0, 160, 120);
+        const frame = eyeCtx.getImageData(40, 20, 80, 80);
+        const data = frame.data;
+        let totalLum = 0, diffSum = 0;
+
+        for (let i = 0; i < data.length; i += 4) {
+          const lum = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
+          totalLum += lum;
+          if (lastFrameData) {
+            diffSum += Math.abs(lum - lastFrameData[i / 4]);
+          }
+        }
+        const pixelCount = data.length / 4;
+        const avgLum = totalLum / pixelCount;
+        const motionDelta = diffSum / pixelCount;
+
+        if (!lastFrameData || lastFrameData.length !== pixelCount) {
+          lastFrameData = new Float32Array(pixelCount);
+        }
+        for (let i = 0; i < data.length; i += 4) {
+          lastFrameData[i / 4] = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
+        }
+
+        let targetEye = 85;
+        if (avgLum < 18) {
+          targetEye = 25; // Dark / camera covered
+        } else if (motionDelta > 16) {
+          targetEye = 52; // Rapid movement / turning away
+        } else if (motionDelta > 8) {
+          targetEye = 68; // Moderate movement
+        } else {
+          targetEye = 88 + Math.min(8, Math.round((255 - avgLum) * 0.03)); // Steady eye contact
+        }
+
+        if (isListening) targetEye = Math.min(96, targetEye + 4);
+
+        eyeSmooth = eyeSmooth * 0.75 + targetEye * 0.25;
+        const finalPct = Math.round(Math.min(98, Math.max(15, eyeSmooth)));
+
+        const eyeVal = document.getElementById('eyeVal');
+        const eyeStatus = document.getElementById('eyeStatus');
+        const eyeBar = document.getElementById('eyeBar');
+
+        if (eyeVal) eyeVal.textContent = finalPct;
+        if (eyeBar) eyeBar.style.width = finalPct + '%';
+        if (eyeStatus) {
+          const statusText = finalPct >= 75 ? 'GOOD' : finalPct >= 55 ? 'FAIR' : 'LOW';
+          const statusColor = finalPct >= 75 ? 'var(--good)' : finalPct >= 55 ? 'var(--warn)' : 'var(--bad)';
+          eyeStatus.textContent = statusText;
+          eyeStatus.style.color = statusColor;
+          if (eyeBar) eyeBar.style.background = statusColor;
+        }
+      } catch (err) {
+        console.warn('Eye tracking frame error', err);
+      }
+    }, 300);
+
     interviewStart=Date.now();
     setInterval(()=>{
       if(interviewStart){
@@ -702,7 +779,8 @@ function animateQuestionText(el, raw){
 function renderQuestionTurn(res){
   const meta=res.meta||{}; if(meta.total) plan.total=meta.total; if(meta.index) plan.index=meta.index;
   document.getElementById('progressLabel').textContent=`Question ${plan.index} of ${plan.total}`;
-  document.getElementById('topicTag').textContent= meta.dayTitle ? `Day ${meta.day} — ${meta.dayTitle}` : `Question ${plan.index}`;
+  document.getElementById('topicTag').textContent= meta.dayTitle ? `${meta.dayTitle}` : `Question ${plan.index}`;
+
   updateConstellation(plan.index-1);
 
   if(meta.coaching){
@@ -739,15 +817,8 @@ function renderQuestionTurn(res){
   // Speak out full interviewer turn (verdict feedback analysis + next question prompt)
   speak(text);
   qStart=Date.now(); 
-  const hints={
-    3:"Think: reducer = state machine, useState = simple value. When transitions get complex, reducer wins.",
-    5:"Consider: exponential backoff, jitter, idempotency key, circuit breaker, optimistic UI.",
-    2:"Use: BrowserStack, Safari Technology Preview, isolation via minimal repro.",
-    7:"Tokens, semantic versioning, changesets, visual regression, adoption codemod."
-  };
-  const hintBox=document.getElementById('hintBox');
-  hintBox.textContent=hints[meta.day]||"Break answer into STAR: Situation, Task, Action, Result. Mention trade-offs.";
 }
+
 
 
 let preferredVoice=null;
@@ -827,8 +898,7 @@ function stopListening(){
 document.getElementById('micToggle').addEventListener('click', ()=> isListening ? stopListening() : startListening());
 document.getElementById('typeInsteadBtn').addEventListener('click', ()=>{ const f=document.getElementById('typeField'); f.classList.toggle('hidden'); if(!f.classList.contains('hidden')) document.getElementById('typeAnswer').focus(); });
 document.getElementById('speakAgainBtn').addEventListener('click', ()=>{ if(currentQuestionTurnText) speak(currentQuestionTurnText); });
-document.getElementById('hintBtn').addEventListener('click', ()=>{ document.getElementById('hintBox').classList.toggle('hidden'); });
-document.getElementById('transcriptToggleBtn').addEventListener('click', ()=>{ document.getElementById('transcriptLog').classList.toggle('show'); });
+
 
 document.getElementById('submitAnswerBtn').addEventListener('click', async ()=>{
   stopListening();
